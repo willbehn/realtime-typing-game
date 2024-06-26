@@ -4,44 +4,81 @@
     <title>WebSocket STOMP Example</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.5.0/sockjs.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
+    <style>
+        .highlight-client1 {
+            background-color: rgb(255, 0, 0);
+        }
+        .highlight-client2 {
+            background-color: rgb(81, 0, 255);
+        }
+    </style>
 </head>
 <body>
     <div id="status"></div>
-    <input type="text" id="message-input">
-    <button onclick="sendMessage()">Send</button>
-
-    <div id="message-container"></div>
+    <div id="fixedTextContainer"></div>
+    <input type="text" id="message-input" oninput="sendMessage()">
 
     <script>
         var stompClient = Stomp.over(new SockJS('/ws'));
-        stompClient.connect({}, function frameCallback() {
-            document.getElementById('status').innerText = 'Connected';
-            stompClient.subscribe('/topic/messages', function (message) {
-                // Handle received messages
-                console.log(message.body);
-                displayMessage(JSON.parse(message.body).content);
+        var clientId = 'client1'; // Change this to identify different clients (e.g., from session)
 
+        stompClient.connect({}, function(frame) {
+            document.getElementById('status').innerText = 'Connected';
+            fetchFixedText();
+
+            stompClient.subscribe('/topic/messages', function(message) {
+                var positions = JSON.parse(message.body);
+                updatePositions(positions);
+            });
+
+            stompClient.subscribe('/topic/fixed-text', function(message) {
+                var fixedText = message.body;
+                displayFixedText(fixedText);
             });
         });
-        
-    
+
         function sendMessage() {
-            var messageInput = document.getElementById("message-input");
-            stompClient.send("/app/hello", {}, messageInput.value);
-        }
-    
-        function displayMessage(message) {
-            var messageContainer = document.getElementById("message-container");
-            var messageElement = document.createElement("div");
-            messageElement.textContent = message;
-            messageContainer.appendChild(messageElement);
+            var messageInput = document.getElementById("message-input").value;
+            if (messageInput.length > 0) {
+                stompClient.send("/app/hello", {}, messageInput);
+                document.getElementById("message-input").value = '';
+            }
         }
 
-        stompClient.onWebSocketClose = closeSocket();
+        function displayFixedText(text) {
+            var fixedTextContainer = document.getElementById("fixedTextContainer");
+            fixedTextContainer.textContent = text;
+        }
 
-        function closeSocket() {
-            document.getElementById('status').innerText = 'Not connected';
-        };
+        function updatePositions(positions) {
+            var fixedTextContainer = document.getElementById("fixedTextContainer");
+            var fixedText = fixedTextContainer.textContent;
+
+            var htmlContent = '';
+            for (var i = 0; i < fixedText.length; i++) {
+                var charClass = '';
+                for (var sessionId in positions) {
+                    if (positions[sessionId] === i) {
+                        charClass = (sessionId === clientId) ? 'highlight-client1' : 'highlight-client2';
+                        break;
+                    }
+                }
+                htmlContent += `<span class="${charClass}">${fixedText.charAt(i)}</span>`;
+            }
+            fixedTextContainer.innerHTML = htmlContent;
+        }
+
+        function fetchFixedText() {
+            fetch('http://localhost:8080/api/fixed-text')
+                .then(response => response.text())
+                .then(data => {
+                    console.log('Received fixed text:', data);
+                    stompClient.send('/app/fixed-text', {}, data);
+                })
+                .catch(error => {
+                    console.error('Failed to fetch fixed text:', error);
+                });
+        }
     </script>
 </body>
 </html>

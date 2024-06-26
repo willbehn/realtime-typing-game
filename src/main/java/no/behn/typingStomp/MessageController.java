@@ -13,44 +13,51 @@ import java.util.concurrent.ConcurrentHashMap;
 
 @Controller
 public class MessageController {
-    //TODO jeg må fjerne etterhvert
-    private int tempCounter = 0;
-    private Map<String, String> sessions = new ConcurrentHashMap<>(); 
+
+    //TODO mby remove
+    private static final String FIXED_TEXT = "Dette er en veldig kul text om et eller annet kult hihi";
+    private Map<String, Integer> clientPositions = new ConcurrentHashMap<>();
 
     @EventListener
     public void handleWebSocketConnectListener(SessionConnectedEvent event) {
         StompHeaderAccessor headerAccessor = StompHeaderAccessor.wrap(event.getMessage());
         String sessionId = headerAccessor.getSessionId();
-        String clientId = generateClientId();
-        sessions.put(sessionId, clientId);
-        System.out.println("New WebSocket connection established. Client ID: " + clientId + ", Session ID: " + sessionId);
+        clientPositions.put(sessionId, 0);
+
+
+        System.out.println("New WebSocket connection established. Session ID: " + sessionId);
     }
 
     @EventListener
     public void handleWebSocketDisconnectListener(SessionDisconnectEvent event) {
         StompHeaderAccessor headerAccessor = StompHeaderAccessor.wrap(event.getMessage());
         String sessionId = headerAccessor.getSessionId();
-        sessions.remove(sessionId);
+        clientPositions.remove(sessionId);
+
         System.out.println("WebSocket connection closed. Session ID: " + sessionId);
     }
 
     @MessageMapping("/hello")
     @SendTo("/topic/messages")
-    public Message greeting(String message, StompHeaderAccessor headerAccessor) {
+    public Map<String, Integer> greeting(String message, StompHeaderAccessor headerAccessor) {
         String sessionId = headerAccessor.getSessionId();
-        String clientId = sessions.get(sessionId);
+        int position = clientPositions.getOrDefault(sessionId, 0);
+        System.out.println("Position: " + position);
 
-        if (clientId != null) {
-            System.out.println("Received message from Client ID: " + clientId);
-        } else {
-            System.out.println("Received message from unknown session.");
+        // Check if the typed letter is correct
+        if (position < FIXED_TEXT.length() && message.charAt(0) == FIXED_TEXT.charAt(position)) {
+            position++;
+            clientPositions.put(sessionId, position);
         }
 
-        return new Message(clientId +": "+ message);
+        // Return all client positions
+        return clientPositions;
     }
 
-    //TODO jeg må fikse bedre client id generering
-    private synchronized String generateClientId() {
-        return Integer.toString(++tempCounter);
+
+    @MessageMapping("/fixed-text")
+    @SendTo("/topic/fixed-text")
+    public String sendFixedText() {
+        return FIXED_TEXT;
     }
 }
