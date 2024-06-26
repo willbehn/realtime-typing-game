@@ -1,6 +1,5 @@
 package no.behn.typingStomp;
 
-
 import org.springframework.context.event.EventListener;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
@@ -14,6 +13,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 @Controller
 public class MessageController {
+    //TODO jeg må fjerne etterhvert
     private int tempCounter = 0;
     private Map<String, String> sessions = new ConcurrentHashMap<>(); 
 

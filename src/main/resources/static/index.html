@@ -6,6 +6,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
 </head>
 <body>
+    <div id="status"></div>
     <input type="text" id="message-input">
     <button onclick="sendMessage()">Send</button>
 
@@ -14,12 +15,15 @@
     <script>
         var stompClient = Stomp.over(new SockJS('/ws'));
         stompClient.connect({}, function frameCallback() {
+            document.getElementById('status').innerText = 'Connected';
             stompClient.subscribe('/topic/messages', function (message) {
                 // Handle received messages
                 console.log(message.body);
                 displayMessage(JSON.parse(message.body).content);
+
             });
         });
+        
     
         function sendMessage() {
             var messageInput = document.getElementById("message-input");
@@ -32,6 +36,12 @@
             messageElement.textContent = message;
             messageContainer.appendChild(messageElement);
         }
+
+        stompClient.onWebSocketClose = closeSocket();
+
+        function closeSocket() {
+            document.getElementById('status').innerText = 'Not connected';
+        };
     </script>
 </body>
 </html>
