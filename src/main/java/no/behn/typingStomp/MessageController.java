@@ -8,15 +8,31 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.socket.messaging.SessionConnectedEvent;
 import org.springframework.web.socket.messaging.SessionDisconnectEvent;
 
+import jakarta.annotation.PostConstruct;
+
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.nio.file.Path;
+
 @Controller
 public class MessageController {
+    Path filePath = Paths.get("src/main/resources/paragraph.txt");
 
+    
     //TODO mby remove
-    private static final String FIXED_TEXT = "Dette er en veldig kul text om et eller annet kult hihi";
+    private String FIXED_TEXT;
     private Map<String, Integer> clientPositions = new ConcurrentHashMap<>();
+
+
+    @PostConstruct
+    public void init() throws IOException {
+        Path filePath = Paths.get("src/main/resources/testParagraph.txt");
+        FIXED_TEXT = new String(Files.readAllBytes(filePath));
+    }
 
     @EventListener
     public void handleWebSocketConnectListener(SessionConnectedEvent event) {
