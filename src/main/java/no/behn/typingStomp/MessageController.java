@@ -20,18 +20,15 @@ import java.nio.file.Path;
 
 @Controller
 public class MessageController {
-    Path filePath = Paths.get("src/main/resources/paragraph.txt");
 
-    
-    //TODO mby remove
-    private String FIXED_TEXT;
+    private String text;
     private Map<String, Integer> clientPositions = new ConcurrentHashMap<>();
 
 
     @PostConstruct
     public void init() throws IOException {
         Path filePath = Paths.get("src/main/resources/testParagraph.txt");
-        FIXED_TEXT = new String(Files.readAllBytes(filePath));
+        text = new String(Files.readAllBytes(filePath));
     }
 
     @EventListener
@@ -61,7 +58,7 @@ public class MessageController {
         System.out.println("Position: " + position);
 
         // Check if the typed letter is correct
-        if (position < FIXED_TEXT.length() && message.charAt(0) == FIXED_TEXT.charAt(position)) {
+        if (position < text.length() && message.charAt(0) == text.charAt(position)) {
             position++;
             clientPositions.put(sessionId, position);
         }
@@ -74,6 +71,6 @@ public class MessageController {
     @MessageMapping("/fixed-text")
     @SendTo("/topic/fixed-text")
     public String sendFixedText() {
-        return FIXED_TEXT;
+        return text;
     }
 }
