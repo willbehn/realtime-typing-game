@@ -5,11 +5,8 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.5.0/sockjs.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
     <style>
-        .highlight-client1 {
+        .highlight-client {
             background-color: rgb(255, 0, 0);
-        }
-        .highlight-client2 {
-            background-color: rgb(81, 0, 255);
         }
     </style>
 </head>
@@ -17,6 +14,7 @@
     <div id="status"></div>
     <div id="fixedTextContainer"></div>
     <input type="text" id="message-input" oninput="sendMessage()">
+    <div id="isDoneContainer"></div>
 
     <script>
         var stompClient = Stomp.over(new SockJS('/ws'));
@@ -26,7 +24,7 @@
             document.getElementById('status').innerText = 'Connected';
             fetchFixedText();
 
-            stompClient.subscribe('/topic/messages', function(message) {
+            stompClient.subscribe('/topic/positions', function(message) {
                 var positions = JSON.parse(message.body);
                 updatePositions(positions);
             });
@@ -56,12 +54,13 @@
 
             console.log("Positins recieved: ", positions);
 
+            //Iterer igjennom hele teksten på nytt hver gang, dette er ikke veldig effektivt og må fikses
             var htmlContent = '';
             for (var i = 0; i < fixedText.length; i++) {
                 var charClass = '';
                 for (var sessionId in positions) {
                     if (positions[sessionId] === i) {
-                        charClass = (sessionId === clientId) ? 'highlight-client1' : 'highlight-client2';
+                        charClass = 'highlight-client';
                         break;
                     }
                 }
