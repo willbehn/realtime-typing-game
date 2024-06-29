@@ -21,7 +21,8 @@ import java.nio.file.Path;
 @Controller
 public class PositionController {
 
-    private String text = "Dette er et avsnitt for testing. Dette er da et veldig kult avsnitt som er veldig kult!";
+    //TODO fiks dette
+    private String text = "Bier er flittige insekter som spiller en avgjørende rolle i økosystemet ved å pollinere blomster og bidra til avlingene våre. Deres organiserte samfunnsstruktur og evne til å produsere honning har fascinert mennesker i århundrer. Biers truede status har ledet til økt fokus på bevaring og beskyttelse av deres levesteder. Forskning på biers adferd og kommunikasjon gir verdifull innsikt i kompleksiteten i det naturlige verden.";
     private int playerCount = 0;
     private Map<String, Integer> clientPositions = new ConcurrentHashMap<>();
 
@@ -75,8 +76,8 @@ public class PositionController {
 
 
     @MessageMapping("/players")
-    @SendTo("topic/players")
-    public int sendPlayerCount(){
-        return playerCount;
+    @SendTo("/topic/players")
+    public String sendPlayerCount(){
+        return Integer.toString(playerCount);
     }
 }

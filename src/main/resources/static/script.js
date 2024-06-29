@@ -1,12 +1,12 @@
-// script.js
-
 var stompClient = Stomp.over(new SockJS('/ws'));
-var clientId = 'client1';
 
 stompClient.connect({}, function(frame) {
-    document.getElementById('status').innerText = 'Connected';
-    fetchFixedText();
+    console.log('Connected: ' + frame);
 
+    // Fetch initial data
+    fetchInitialData();
+
+    // Subscribe to topics
     stompClient.subscribe('/topic/positions', function(message) {
         var positions = JSON.parse(message.body);
         updatePositions(positions);
@@ -15,6 +15,12 @@ stompClient.connect({}, function(frame) {
     stompClient.subscribe('/topic/fixed-text', function(message) {
         var fixedText = message.body;
         displayFixedText(fixedText);
+    });
+
+    stompClient.subscribe('/topic/players', function(message) {
+        var playerCount = message.body;
+        console.log('Received player count: ' + playerCount);
+        displayPlayerCount(playerCount);
     });
 });
 
@@ -26,9 +32,41 @@ function sendMessage() {
     }
 }
 
+function fetchInitialData() {
+    // Fetch initial fixed text
+    fetch('/app/fixed-text')
+        .then(response => response.text())
+        .then(data => {
+            console.log('Received fixed text:', data);
+            stompClient.send('/app/fixed-text', {}, data);
+        })
+        .catch(error => {
+            console.error('Failed to fetch fixed text:', error);
+        });
+
+    // Fetch initial player count
+    fetch('/app/players')
+        .then(response => response.text())
+        .then(data => {
+            console.log('Received player count:', data);
+            stompClient.send('/app/players', {}, data);
+        })
+        .catch(error => {
+            console.error('Failed to fetch player count:', error);
+        });
+}
+
+
 function displayFixedText(text) {
     var fixedTextContainer = document.getElementById("fixedTextContainer");
     fixedTextContainer.textContent = text;
+}
+
+function displayPlayerCount(playerCount) {
+    var playerCountContainer = document.getElementById("status");
+    
+    playerCountContainer.textContent = playerCount + " players connected";
+    
 }
 
 function updatePositions(positions) {
@@ -49,16 +87,4 @@ function updatePositions(positions) {
         htmlContent += `<span class="${charClass}">${fixedText.charAt(i)}</span>`;
     }
     fixedTextContainer.innerHTML = htmlContent;
-}
-
-function fetchFixedText() {
-    fetch('api/fixed-text')
-        .then(response => response.text())
-        .then(data => {
-            console.log('Received fixed text:', data);
-            stompClient.send('/app/fixed-text', {}, data);
-        })
-        .catch(error => {
-            console.error('Failed to fetch fixed text:', error);
-        });
 }

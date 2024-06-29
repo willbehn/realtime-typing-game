@@ -11,7 +11,7 @@ body {
 }
 
 h2 {
-    font-size: 24px; /* Størrelse på overskrift */
+    font-size: 20px; /* Størrelse på overskrift */
     color: #333333; /* Tekstfarge */
     margin-top: 20px; /* Avstand over overskriften */
 }
@@ -22,11 +22,13 @@ h2 {
 
 #fixedTextContainer {
     padding: 10px; /* Innebygd padding */
+    font-size: 16px;
     border: 1px solid #cccccc; /* Ramme med grå farge */
     border-radius: 4px; /* Avrundede hjørner */
     background-color: #f8f8f8; /* Bakgrunnsfarge */
-    text-align: left; /* Venstrestilling av tekst */
+    text-align: middle; /* Venstrestilling av tekst */
     margin-top: 20px; /* Avstand over fast tekstcontainer */
+    width: 75%; /* Full bredde */
 }
 
 #message-input {
