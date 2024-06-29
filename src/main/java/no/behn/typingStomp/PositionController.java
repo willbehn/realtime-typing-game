@@ -22,6 +22,7 @@ import java.nio.file.Path;
 public class PositionController {
 
     private String text = "Dette er et avsnitt for testing. Dette er da et veldig kult avsnitt som er veldig kult!";
+    private int playerCount = 0;
     private Map<String, Integer> clientPositions = new ConcurrentHashMap<>();
 
 
@@ -36,6 +37,7 @@ public class PositionController {
         StompHeaderAccessor headerAccessor = StompHeaderAccessor.wrap(event.getMessage());
         String sessionId = headerAccessor.getSessionId();
         clientPositions.put(sessionId, 0);
+        playerCount++;
 
         System.out.println("New WebSocket connection established. Session ID: " + sessionId);
     }
@@ -45,6 +47,7 @@ public class PositionController {
         StompHeaderAccessor headerAccessor = StompHeaderAccessor.wrap(event.getMessage());
         String sessionId = headerAccessor.getSessionId();
         clientPositions.remove(sessionId);
+        playerCount--;
 
         System.out.println("WebSocket connection closed. Session ID: " + sessionId);
     }
@@ -68,5 +71,12 @@ public class PositionController {
     @SendTo("/topic/fixed-text")
     public String sendFixedText() {
         return text;
+    }
+
+
+    @MessageMapping("/players")
+    @SendTo("topic/players")
+    public int sendPlayerCount(){
+        return playerCount;
     }
 }
