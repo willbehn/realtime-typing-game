@@ -21,14 +21,15 @@ import java.nio.file.Path;
 @Controller
 public class PositionController {
 
-    private String text;
+    private String text = "Dette er et avsnitt for testing. Dette er da et veldig kult avsnitt som er veldig kult!";
     private Map<String, Integer> clientPositions = new ConcurrentHashMap<>();
 
 
-    public PositionController() throws IOException {
-        Path filePath = Paths.get("src/main/resources/testParagraph.txt");
-        text = new String(Files.readAllBytes(filePath));
-    }
+    /*public PositionController() throws IOException {
+        //Path filePath = Paths.get("src/main/resources/testParagraph.txt");
+        //text = new String(Files.readAllBytes(filePath));
+        text = "Dette er en test tekst hihihihi. Denne skal egentlig være mye lengre";
+    }*/
 
     @EventListener
     public void handleWebSocketConnectListener(SessionConnectedEvent event) {
