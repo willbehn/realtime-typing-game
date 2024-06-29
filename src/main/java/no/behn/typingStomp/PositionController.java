@@ -25,8 +25,7 @@ public class PositionController {
     private Map<String, Integer> clientPositions = new ConcurrentHashMap<>();
 
 
-    @PostConstruct
-    public void init() throws IOException {
+    public PositionController() throws IOException {
         Path filePath = Paths.get("src/main/resources/testParagraph.txt");
         text = new String(Files.readAllBytes(filePath));
     }
@@ -51,16 +50,15 @@ public class PositionController {
 
     @MessageMapping("/hello")
     @SendTo("/topic/positions")
-    public Map<String, Integer> greeting(String message, StompHeaderAccessor headerAccessor) {
+    public Map<String, Integer> handlePosition(String message, StompHeaderAccessor headerAccessor) {
         String sessionId = headerAccessor.getSessionId();
         int position = clientPositions.getOrDefault(sessionId, 0);
-        System.out.println("Position: " + position);
+        System.out.println("sessionID: " + sessionId + ", position: " + position);
 
         if (position < text.length() && message.charAt(0) == text.charAt(position)) {
             position++;
             clientPositions.put(sessionId, position);
         }
-        
         return clientPositions;
     }
 

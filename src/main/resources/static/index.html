@@ -11,6 +11,7 @@
     </style>
 </head>
 <body>
+    <h2>Skriv avsnittet så raskt som mulig!</h2>
     <div id="status"></div>
     <div id="fixedTextContainer"></div>
     <input type="text" id="message-input" oninput="sendMessage()">
@@ -38,6 +39,7 @@
         function sendMessage() {
             var messageInput = document.getElementById("message-input").value;
             if (messageInput.length > 0) {
+                //TODO add validation here for less lag
                 stompClient.send("/app/hello", {}, messageInput);
                 document.getElementById("message-input").value = '';
             }
