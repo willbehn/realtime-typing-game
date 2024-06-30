@@ -72,6 +72,7 @@ function displayPlayerCount(playerCount) {
 function updatePositions(positions) {
     var fixedTextContainer = document.getElementById("fixedTextContainer");
     var fixedText = fixedTextContainer.textContent;
+    var isFinished = false;
 
     console.log("Positions received: ", positions);
 
@@ -87,4 +88,11 @@ function updatePositions(positions) {
         htmlContent += `<span class="${charClass}">${fixedText.charAt(i)}</span>`;
     }
     fixedTextContainer.innerHTML = htmlContent;
+}
+
+function enableTyping() {
+    var messageInput = document.getElementById("message-input");
+
+    // Focus on the message input field
+    messageInput.focus();
 }
