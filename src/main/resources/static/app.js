@@ -52,6 +52,33 @@ function fetchInitialData() {
         });
 }
 
+function createRoom() {
+    fetch('/api/rooms', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
+        }
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Network response was not ok ' + response.statusText);
+        }
+        return response.json();
+    })
+    .then(data => {
+        console.log('Room created:', data);
+        const roomId = data.id;
+        document.getElementById("current-room-id").textContent = roomId;
+        //joinRoom(); // Automatically join the room after creating it
+    })
+    .catch(error => {
+        console.error('Failed to create room:', error);
+    });
+}
+
+
+
 
 function displayFixedText(text) {
     var fixedTextContainer = document.getElementById("fixedTextContainer");

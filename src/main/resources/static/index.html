@@ -9,12 +9,16 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <h2>Typing game with STOMP</h2>
+    <h2>Typing game mvp</h2>
     <div id="status"></div>
     <div id="fixedTextContainer" onclick="enableTyping()" style="cursor: pointer;"></div>
     <input type="text" id="message-input" oninput="sendMessage()">
-    <div id="isDoneContainer"></div>
+    
+    <div>
+        <div id="current-room-id"></div>
+        <button onclick="createRoom()">Create Room</button>
+    </div>
 
-    <script src="script.js"></script>
+    <script src="app.js"></script>
 </body>
 </html>
