@@ -12,17 +12,13 @@ stompClient.connect({}, function(frame) {
         updatePositions(positions);
     });
 
-    stompClient.subscribe('/topic/fixed-text', function(message) {
-        var fixedText = message.body;
-        displayFixedText(fixedText);
-    });
-
     stompClient.subscribe('/topic/players', function(message) {
         var playerCount = message.body;
         console.log('Received player count: ' + playerCount);
         displayPlayerCount(playerCount);
     });
 });
+
 
 function sendMessage() {
     var messageInput = document.getElementById("message-input").value;
@@ -34,11 +30,11 @@ function sendMessage() {
 
 function fetchInitialData() {
     // Fetch initial fixed text
-    fetch('/app/fixed-text')
+    fetch('/api/text')
         .then(response => response.text())
         .then(data => {
             console.log('Received fixed text:', data);
-            stompClient.send('/app/fixed-text', {}, data);
+            displayFixedText(data);
         })
         .catch(error => {
             console.error('Failed to fetch fixed text:', error);

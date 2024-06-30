@@ -1,5 +1,6 @@
 package no.behn.typingStomp;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.event.EventListener;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
@@ -8,31 +9,22 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.socket.messaging.SessionConnectedEvent;
 import org.springframework.web.socket.messaging.SessionDisconnectEvent;
 
-import jakarta.annotation.PostConstruct;
-
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.nio.file.Path;
 
 @Controller
 public class PositionController {
-
-    //TODO fiks dette
-    private String text = "Bier er flittige insekter som spiller en avgjørende rolle i økosystemet ved å pollinere blomster og bidra til avlingene våre. Deres organiserte samfunnsstruktur og evne til å produsere honning har fascinert mennesker i århundrer. Biers truede status har ledet til økt fokus på bevaring og beskyttelse av deres levesteder. Forskning på biers adferd og kommunikasjon gir verdifull innsikt i kompleksiteten i det naturlige verden.";
     private int playerCount = 0;
     private Map<String, Integer> clientPositions = new ConcurrentHashMap<>();
 
 
-    /*public PositionController() throws IOException {
-        //Path filePath = Paths.get("src/main/resources/testParagraph.txt");
-        //text = new String(Files.readAllBytes(filePath));
-        text = "Dette er en test tekst hihihihi. Denne skal egentlig være mye lengre";
-    }*/
+    private final TextService textService;
 
+    @Autowired
+    public PositionController(TextService textService) {
+        this.textService = textService;
+    }
     @EventListener
     public void handleWebSocketConnectListener(SessionConnectedEvent event) {
         StompHeaderAccessor headerAccessor = StompHeaderAccessor.wrap(event.getMessage());
@@ -56,6 +48,7 @@ public class PositionController {
     @MessageMapping("/hello")
     @SendTo("/topic/positions")
     public Map<String, Integer> handlePosition(String message, StompHeaderAccessor headerAccessor) {
+        String text = textService.getText();
         String sessionId = headerAccessor.getSessionId();
         int position = clientPositions.getOrDefault(sessionId, 0);
         System.out.println("sessionID: " + sessionId + ", position: " + position);
@@ -66,14 +59,6 @@ public class PositionController {
         }
         return clientPositions;
     }
-
-
-    @MessageMapping("/fixed-text")
-    @SendTo("/topic/fixed-text")
-    public String sendFixedText() {
-        return text;
-    }
-
 
     @MessageMapping("/players")
     @SendTo("/topic/players")
