@@ -3,20 +3,26 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>WebSocket STOMP Example</title>
+    <title>Typing Game MVP</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.5.0/sockjs.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <h2>Typing game mvp</h2>
-    <div id="status"></div>
-    <div id="fixedTextContainer" onclick="enableTyping()" style="cursor: pointer;"></div>
-    <input type="text" id="message-input" oninput="sendMessage()">
-    
-    <div>
-        <div id="current-room-id"></div>
+    <div id="start-screen">
+        <h2>Welcome to the Typing Game</h2>
         <button onclick="createRoom()">Create Room</button>
+        <div id="join-room-container">
+            <input type="text" id="join-room-id" placeholder="Enter Room ID to Join">
+            <button onclick="joinRoom()">Join Room</button>
+        </div>
+    </div>
+
+    <div id="game-screen" style="display:none;">
+        <div id="status"></div>
+        <div id="fixedTextContainer" onclick="enableTyping()" style="cursor: pointer;"></div>
+        <input type="text" id="message-input" oninput="sendMessage()">
+        <div id="current-room-id"></div>
     </div>
 
     <script src="app.js"></script>
