@@ -2,6 +2,7 @@ package no.behn.typingStomp;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.event.EventListener;
+import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
@@ -20,10 +21,12 @@ public class PositionController {
 
 
     private final TextService textService;
+    private final RoomService roomService;
 
     @Autowired
-    public PositionController(TextService textService) {
+    public PositionController(TextService textService, RoomService roomService) {
         this.textService = textService;
+        this.roomService = roomService;
     }
     @EventListener
     public void handleWebSocketConnectListener(SessionConnectedEvent event) {
@@ -45,11 +48,14 @@ public class PositionController {
         System.out.println("WebSocket connection closed. Session ID: " + sessionId);
     }
 
-    @MessageMapping("/hello")
-    @SendTo("/topic/positions")
-    public Map<String, Integer> handlePosition(String message, StompHeaderAccessor headerAccessor) {
-        String text = textService.getText();
+    @MessageMapping("/room/{roomId}/position")
+    @SendTo("/topic/room/{roomId}/positions")
+    public Map<String, Integer> handlePosition(@DestinationVariable String roomId, String message, StompHeaderAccessor headerAccessor) {
         String sessionId = headerAccessor.getSessionId();
+        Room room = roomService.getRoom(roomId);
+        Map<String, Integer> clientPositions = room.getClientPositions();
+        String text = room.getText();
+
         int position = clientPositions.getOrDefault(sessionId, 0);
         System.out.println("sessionID: " + sessionId + ", position: " + position);
 
