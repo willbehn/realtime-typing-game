@@ -1,5 +1,3 @@
-// app.js
-
 var stompClient = null;
 
 function createRoom() {
@@ -46,10 +44,10 @@ function connectToRoom(roomId) {
         document.getElementById("game-screen").style.display = "flex";
 
         // Fetch initial data
-        fetchInitialData();
+        fetchInitialData(roomId);
 
         // Subscribe to topics
-        stompClient.subscribe('/topic/' + roomId + '/positions', function(message) {
+        stompClient.subscribe('/topic/room/' + roomId + '/positions', function(message) {
             var positions = JSON.parse(message.body);
             updatePositions(positions);
         });
@@ -70,8 +68,8 @@ function sendMessage() {
     }
 }
 
-function fetchInitialData() {
-    // Fetch initial fixed text
+function fetchInitialData(roomId) {
+    //Change with the room specific endpoint
     fetch('/api/text')
         .then(response => response.text())
         .then(data => {

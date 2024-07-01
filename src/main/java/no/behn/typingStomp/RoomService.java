@@ -27,6 +27,7 @@ public class RoomService {
     public void addClientToRoom(String roomId, String sessionId) {
         Room room = rooms.get(roomId);
         if (room != null) {
+            System.out.println("Adding client with sessionId: " + sessionId + " to roomId: " + roomId);
             room.addClient(sessionId);;
         }
     }

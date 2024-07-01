@@ -9,5 +9,4 @@ public class TypingStompApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(TypingStompApplication.class, args);
 	}
-
 }

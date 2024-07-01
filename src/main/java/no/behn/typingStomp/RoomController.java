@@ -31,10 +31,11 @@ public class RoomController {
         return roomService.getRoom(roomId);
     }
 
-    @PostMapping("/{roomId}/players")
+    //TODO remove if not in use
+    /*@PostMapping("/{roomId}/players")
     public void joinRoom(@PathVariable String roomId, @RequestParam String sessionId) {
         roomService.addClientToRoom(roomId, sessionId);
-    }
+    }*/
 
     @GetMapping("/{roomId}/text")
     public String getMethodName(@RequestParam String roomId) {

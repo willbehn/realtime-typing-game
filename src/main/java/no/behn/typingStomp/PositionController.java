@@ -19,13 +19,10 @@ public class PositionController {
     private int playerCount = 0;
     private Map<String, Integer> clientPositions = new ConcurrentHashMap<>();
 
-
-    private final TextService textService;
     private final RoomService roomService;
 
     @Autowired
-    public PositionController(TextService textService, RoomService roomService) {
-        this.textService = textService;
+    public PositionController(RoomService roomService) {
         this.roomService = roomService;
     }
     @EventListener
@@ -48,7 +45,7 @@ public class PositionController {
         System.out.println("WebSocket connection closed. Session ID: " + sessionId);
     }
 
-    @MessageMapping("/room/{roomId}/position")
+    @MessageMapping("/room/{roomId}")
     @SendTo("/topic/room/{roomId}/positions")
     public Map<String, Integer> handlePosition(@DestinationVariable String roomId, String message, StompHeaderAccessor headerAccessor) {
         String sessionId = headerAccessor.getSessionId();
