@@ -10,7 +10,14 @@
 </head>
 <body>
     <div id="start-screen">
-        <h2>Welcome to the Typing Game</h2>
+        <pre id="ascii-art">
+ ______              ____         _      __ 
+/_  __/_ _____  ___ / __/__  ____(_)__  / /_
+ / / / // / _ \/ -_)\ \/ _ \/ __/ / _ \/ __/
+/_/  \_, / .__/\__/___/ .__/_/ /_/_//_/\__/ 
+    /___/_/          /_/                    
+        </pre>
+        <h2></h2>
         <button onclick="createRoom()">Create Room</button>
         <div id="join-room-container">
             <input type="text" id="join-room-id" placeholder="Enter Room ID to Join">
@@ -22,8 +29,14 @@
         <div id="status"></div>
         <div id="fixedTextContainer" onclick="enableTyping()" style="cursor: pointer;"></div>
         <input type="text" id="message-input" oninput="sendMessage()">
-        <div id="current-room-id"></div>
+
+        <div id="room-id-container">
+            <div id="current-room-id"></div>
+            <button onclick="copyToClipboard()">Copy room id</button>
+        </div>
     </div>
+
+    <div id="alert-container" class="hidden"></div>
 
     <script src="app.js"></script>
 </body>

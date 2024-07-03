@@ -31,7 +31,7 @@ function joinRoom() {
         document.getElementById("current-room-id").textContent = "Room ID: " + roomId;
         connectToRoom(roomId);
     } else {
-        alert("Please enter a valid room ID");
+        showAlert("Please enter a valid room ID",3000);
     }
 }
 
@@ -126,3 +126,29 @@ function enableTyping() {
     var messageInput = document.getElementById("message-input");
     messageInput.focus();
 }
+
+function copyToClipboard() {
+    var roomIdWithText = document.getElementById("current-room-id").innerText.split(" ");
+    var roomId = roomIdWithText[roomIdWithText.length-1];
+
+    navigator.clipboard.writeText(roomId).then(function() {
+        showAlert("Room ID copied!", 3000);
+    }).catch(function(error) {
+        console.error('Failed to copy text: ', error);
+    });
+}
+
+function showAlert(message, duration = 3000) {
+    var alertContainer = document.getElementById("alert-container");
+    alertContainer.textContent = message;
+    alertContainer.classList.remove("hidden");
+    alertContainer.classList.add("show");
+
+    setTimeout(function() {
+        alertContainer.classList.remove("show");
+        alertContainer.classList.add("hidden");
+    }, duration);
+}
+
+
+
