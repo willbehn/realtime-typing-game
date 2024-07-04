@@ -183,9 +183,14 @@ function updatePositions(positions) {
     let htmlContent = '';
     for (let i = 0; i < fixedText.length; i++) {
         let charClass = '';
-        for (const sessionId in positions) {
-            if (positions[sessionId] === i) {
-                charClass = 'highlight-client';
+        for (const sessionIdTest in positions) {
+            if (positions[sessionIdTest] === i) {
+                if (sessionIdTest == sessionId){
+                    charClass = 'highlight-client-self';
+
+                } else {
+                    charClass = 'highlight-client-opponent';
+                }
                 break;
             }
         }

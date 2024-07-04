@@ -97,8 +97,12 @@ input[type="text"] {
     color: #E0E0E0; 
 }
 
-.highlight-client {
+.highlight-client-self {
     background-color: #28a745;
+}
+
+.highlight-client-opponent {
+    background-color: #E91E63;
 }
 
 #alert-container {
