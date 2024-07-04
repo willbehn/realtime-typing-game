@@ -19,7 +19,7 @@ function createRoom() {
         console.log('Room created:', data);
         currentRoomId = data.id;
         document.getElementById("current-room-id").textContent = "Room ID: " + currentRoomId;
-        connectToRoom(currentRoomId);
+        joinCreatedRoom(currentRoomId);
     })
     .catch(error => {
         console.error('Failed to create room:', error);
@@ -50,6 +50,24 @@ function joinRoom() {
         showAlert("Please enter a valid room ID", 3000);
     }
 }
+
+function joinCreatedRoom(roomId) {
+    fetch('/api/rooms/' + roomId + '/join?sessionId=test', {
+        method: 'POST'
+    })
+    .then(response => {
+        if (!response.ok) {
+            showAlert("Please enter a valid room ID", 3000);
+        } else {
+            connectToRoom(roomId);
+        }
+    })
+    .catch(error => {
+        console.error('Failed to join room:', error);
+        showAlert("Failed to join room. Please try again later.", 3000);
+    });
+} 
+
 
 function leaveRoom() {
     
