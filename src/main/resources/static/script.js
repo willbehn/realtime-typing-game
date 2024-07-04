@@ -1,5 +1,6 @@
 let stompClient = null;
 let currentRoomId = null;
+let sessionId = null;
 
 function createRoom() {
     fetch('/api/rooms', {
@@ -30,13 +31,18 @@ function joinRoom() {
     const roomId = document.getElementById("join-room-id").value.trim();
     console.log("Trying to join room with id: " + roomId);
     if (roomId.length > 0) {
-        fetch('/api/rooms/' + roomId + '/join?sessionId=test', {
-            method: 'POST'
-        })
+        fetch("/api/rooms/" + roomId +"/join",{method: 'POST'})
         .then(response => {
             if (!response.ok) {
                 showAlert("Please enter a valid room ID", 3000);
+                return null;
             } else {
+                return response.text();
+            }
+        })
+        .then(data => {
+            if (data) {
+                sessionId = data;
                 currentRoomId = roomId;
                 document.getElementById("current-room-id").textContent = "Room ID: " + roomId;
                 connectToRoom(roomId);
@@ -52,13 +58,18 @@ function joinRoom() {
 }
 
 function joinCreatedRoom(roomId) {
-    fetch('/api/rooms/' + roomId + '/join?sessionId=test', {
-        method: 'POST'
-    })
+    fetch("/api/rooms/" + roomId +"/join",{method: 'POST'})
     .then(response => {
         if (!response.ok) {
             showAlert("Please enter a valid room ID", 3000);
+            return null;
         } else {
+            return response.text();
+        }
+    })
+    .then(data => {
+        if (data) {
+            sessionId = data;
             connectToRoom(roomId);
         }
     })
@@ -66,7 +77,7 @@ function joinCreatedRoom(roomId) {
         console.error('Failed to join room:', error);
         showAlert("Failed to join room. Please try again later.", 3000);
     });
-} 
+}
 
 
 function leaveRoom() {
@@ -75,11 +86,15 @@ function leaveRoom() {
 
 function connectToRoom(roomId) {
     stompClient = Stomp.over(new SockJS('/ws'));
+    console.log("SessionId recieved from server: " + sessionId);
+
+    
 
     stompClient.connect({}, function(frame) {
         console.log('Connected: ' + frame);
         document.getElementById("start-screen").style.display = "none";
         document.getElementById("game-screen").style.display = "flex";
+
 
         // Fetch initial data
         fetchInitialData(roomId);
@@ -101,7 +116,7 @@ function connectToRoom(roomId) {
 function sendMessage() {
     const messageInput = document.getElementById("message-input").value;
     if (messageInput.length > 0) {
-        stompClient.send("/app/room/" + currentRoomId, {}, messageInput);
+        stompClient.send("/app/room/" + currentRoomId, {sessionId: sessionId}, messageInput);
         document.getElementById("message-input").value = '';
     }
 }

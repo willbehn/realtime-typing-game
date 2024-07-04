@@ -5,10 +5,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 
-
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/rooms")
@@ -37,10 +35,11 @@ public class RoomController {
     }
 
     @PostMapping("/{roomId}/join")
-    public ResponseEntity<String> joinRoom(@PathVariable String roomId, @RequestParam String sessionId) {
+    public ResponseEntity<String> joinRoom(@PathVariable String roomId) {
         if (roomService.getRoom(roomId) != null){
-            //roomService.addClientToRoom(roomId, sessionId);
-            return ResponseEntity.ok("Room joined");
+            String sessionId = UUID.randomUUID().toString();
+            roomService.addClientToRoom(roomId, sessionId);
+            return ResponseEntity.ok(sessionId);
 
         } else{
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Room not found.");
@@ -48,7 +47,7 @@ public class RoomController {
     }
 
     //TODO not in use
-    @PostMapping("/{roomId}/leave")
+    /*@PostMapping("/{roomId}/leave")
     public ResponseEntity<String> leaveRoom(@PathVariable String roomId, @RequestParam String sessionId) {
         if (roomService.getRoom(roomId) != null){
             //roomService.removeClientFromRoom(roomId, sessionId);
@@ -56,7 +55,7 @@ public class RoomController {
         } else{
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Room not found.");
         }
-    }
+    }*/
     
 
     @GetMapping("/{roomId}/text")

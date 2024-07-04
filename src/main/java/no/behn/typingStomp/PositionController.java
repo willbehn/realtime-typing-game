@@ -2,6 +2,7 @@ package no.behn.typingStomp;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.event.EventListener;
+import org.springframework.messaging.MessageHeaders;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
@@ -17,7 +18,6 @@ import java.util.concurrent.ConcurrentHashMap;
 @Controller
 public class PositionController {
     private int playerCount = 0;
-    private Map<String, Integer> clientPositions = new ConcurrentHashMap<>();
 
     private final RoomService roomService;
 
@@ -27,40 +27,31 @@ public class PositionController {
     }
     @EventListener
     public void handleWebSocketConnectListener(SessionConnectedEvent event) {
-        StompHeaderAccessor headerAccessor = StompHeaderAccessor.wrap(event.getMessage());
-        String sessionId = headerAccessor.getSessionId();
-        clientPositions.put(sessionId, 0);
         playerCount++;
 
-        System.out.println("New WebSocket connection established. Session ID: " + sessionId);
     }
-
+    
     @EventListener
-    public void handleWebSocketDisconnectListener(SessionDisconnectEvent event) {
-        StompHeaderAccessor headerAccessor = StompHeaderAccessor.wrap(event.getMessage());
-        String sessionId = headerAccessor.getSessionId();
-        clientPositions.remove(sessionId);
-        playerCount--;
-
-        System.out.println("WebSocket connection closed. Session ID: " + sessionId);
+    public void handleWebSocketDisconnectListener(SessionDisconnectEvent event) {  
+       playerCount--;
     }
 
     @MessageMapping("/room/{roomId}")
     @SendTo("/topic/room/{roomId}/positions")
     public Map<String, Integer> handlePosition(@DestinationVariable String roomId, String message, StompHeaderAccessor headerAccessor) {
-        String sessionId = headerAccessor.getSessionId();
+        String sessionId = headerAccessor.getFirstNativeHeader("sessionId");
         Room room = roomService.getRoom(roomId);
-        Map<String, Integer> clientPositions = room.getClientPositions();
+        Map<String, Integer> roomClientPositions = room.getClientPositions();
         String text = room.getText();
 
-        int position = clientPositions.getOrDefault(sessionId, 0);
+        int position = roomClientPositions.get(sessionId);
         System.out.println("sessionID: " + sessionId + ", position: " + position);
 
         if (position < text.length() && message.charAt(0) == text.charAt(position)) {
             position++;
-            clientPositions.put(sessionId, position);
+            roomClientPositions.put(sessionId, position);
         }
-        return clientPositions;
+        return roomClientPositions;
     }
 
     @MessageMapping("/players")
