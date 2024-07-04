@@ -25,8 +25,18 @@ public class Room {
         clientPositions.put(sessionId, 0);
     }
 
+    public void removeClient(String sessionId) {
+        if (clientPositions.containsKey(sessionId)){
+            clientPositions.remove(sessionId);
+        }
+    }
+
     public Map<String, Integer> getClientPositions() {
         return clientPositions;
+    }
+
+    public int getClientCount(){
+        return clientPositions.keySet().size();
     }
 }
 

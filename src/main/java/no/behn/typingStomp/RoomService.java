@@ -32,6 +32,19 @@ public class RoomService {
         }
     }
 
+    public void removeClientFromRoom(String roomId, String sessionId) {
+        Room room = rooms.get(roomId);
+        if (room != null) {
+            System.out.println("Removing client with sessionId: " + sessionId + " from roomId: " + roomId);
+            room.removeClient(sessionId);
+
+            // Removes the room if there are no players remaining
+            if (room.getClientCount() == 0){
+                rooms.remove(roomId);
+            }
+        }
+    }
+
     private String generateRoomId() {
         return UUID.randomUUID().toString();
     }

@@ -1,8 +1,13 @@
 package no.behn.typingStomp;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+
 
 
 @RestController
@@ -31,11 +36,28 @@ public class RoomController {
         return roomService.getRoom(roomId);
     }
 
-    //TODO remove if not in use
-    /*@PostMapping("/{roomId}/players")
-    public void joinRoom(@PathVariable String roomId, @RequestParam String sessionId) {
-        roomService.addClientToRoom(roomId, sessionId);
-    }*/
+    @PostMapping("/{roomId}/join")
+    public ResponseEntity<String> joinRoom(@PathVariable String roomId, @RequestParam String sessionId) {
+        if (roomService.getRoom(roomId) != null){
+            //roomService.addClientToRoom(roomId, sessionId);
+            return ResponseEntity.ok("Room joined");
+
+        } else{
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Room not found.");
+        }
+    }
+
+    //TODO not in use
+    @PostMapping("/{roomId}/leave")
+    public ResponseEntity<String> leaveRoom(@PathVariable String roomId, @RequestParam String sessionId) {
+        if (roomService.getRoom(roomId) != null){
+            //roomService.removeClientFromRoom(roomId, sessionId);
+            return ResponseEntity.ok("Room leaves");
+        } else{
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Room not found.");
+        }
+    }
+    
 
     @GetMapping("/{roomId}/text")
     public String getMethodName(@RequestParam String roomId) {

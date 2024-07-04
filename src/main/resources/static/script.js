@@ -1,4 +1,5 @@
-var stompClient = null;
+let stompClient = null;
+let currentRoomId = null;
 
 function createRoom() {
     fetch('/api/rooms', {
@@ -16,9 +17,9 @@ function createRoom() {
     })
     .then(data => {
         console.log('Room created:', data);
-        roomId = data.id;
-        document.getElementById("current-room-id").textContent = "Room ID: " + roomId;
-        connectToRoom(roomId);
+        currentRoomId = data.id;
+        document.getElementById("current-room-id").textContent = "Room ID: " + currentRoomId;
+        connectToRoom(currentRoomId);
     })
     .catch(error => {
         console.error('Failed to create room:', error);
@@ -26,13 +27,32 @@ function createRoom() {
 }
 
 function joinRoom() {
-    roomId = document.getElementById("join-room-id").value.trim();
+    const roomId = document.getElementById("join-room-id").value.trim();
+    console.log("Trying to join room with id: " + roomId);
     if (roomId.length > 0) {
-        document.getElementById("current-room-id").textContent = "Room ID: " + roomId;
-        connectToRoom(roomId);
+        fetch('/api/rooms/' + roomId + '/join?sessionId=test', {
+            method: 'POST'
+        })
+        .then(response => {
+            if (!response.ok) {
+                showAlert("Please enter a valid room ID", 3000);
+            } else {
+                currentRoomId = roomId;
+                document.getElementById("current-room-id").textContent = "Room ID: " + roomId;
+                connectToRoom(roomId);
+            }
+        })
+        .catch(error => {
+            console.error('Failed to join room:', error);
+            showAlert("Failed to join room. Please try again later.", 3000);
+        });
     } else {
-        showAlert("Please enter a valid room ID",3000);
+        showAlert("Please enter a valid room ID", 3000);
     }
+}
+
+function leaveRoom() {
+    
 }
 
 function connectToRoom(roomId) {
@@ -48,12 +68,12 @@ function connectToRoom(roomId) {
 
         // Subscribe to topics
         stompClient.subscribe('/topic/room/' + roomId + '/positions', function(message) {
-            var positions = JSON.parse(message.body);
+            const positions = JSON.parse(message.body);
             updatePositions(positions);
         });
 
         stompClient.subscribe('/topic/players', function(message) {
-            var playerCount = message.body;
+            const playerCount = message.body;
             console.log('Received player count: ' + playerCount);
             displayPlayerCount(playerCount);
         });
@@ -61,15 +81,15 @@ function connectToRoom(roomId) {
 }
 
 function sendMessage() {
-    var messageInput = document.getElementById("message-input").value;
+    const messageInput = document.getElementById("message-input").value;
     if (messageInput.length > 0) {
-        stompClient.send("/app/room/" + roomId, {}, messageInput);
+        stompClient.send("/app/room/" + currentRoomId, {}, messageInput);
         document.getElementById("message-input").value = '';
     }
 }
 
 function fetchInitialData(roomId) {
-    //Change with the room specific endpoint
+    // Change with the room-specific endpoint later
     fetch('/api/text')
         .then(response => response.text())
         .then(data => {
@@ -80,7 +100,7 @@ function fetchInitialData(roomId) {
             console.error('Failed to fetch fixed text:', error);
         });
 
-    // Fetch initial player count
+    // Change with room specific playercount later
     fetch('/app/players')
         .then(response => response.text())
         .then(data => {
@@ -93,25 +113,25 @@ function fetchInitialData(roomId) {
 }
 
 function displayFixedText(text) {
-    var fixedTextContainer = document.getElementById("fixedTextContainer");
+    const fixedTextContainer = document.getElementById("fixedTextContainer");
     fixedTextContainer.textContent = text;
 }
 
 function displayPlayerCount(playerCount) {
-    var playerCountContainer = document.getElementById("status");
+    const playerCountContainer = document.getElementById("status");
     playerCountContainer.textContent = playerCount + " players connected";
 }
 
 function updatePositions(positions) {
-    var fixedTextContainer = document.getElementById("fixedTextContainer");
-    var fixedText = fixedTextContainer.textContent;
+    const fixedTextContainer = document.getElementById("fixedTextContainer");
+    const fixedText = fixedTextContainer.textContent;
 
     console.log("Positions received: ", positions);
 
-    var htmlContent = '';
-    for (var i = 0; i < fixedText.length; i++) {
-        var charClass = '';
-        for (var sessionId in positions) {
+    let htmlContent = '';
+    for (let i = 0; i < fixedText.length; i++) {
+        let charClass = '';
+        for (const sessionId in positions) {
             if (positions[sessionId] === i) {
                 charClass = 'highlight-client';
                 break;
@@ -123,32 +143,30 @@ function updatePositions(positions) {
 }
 
 function enableTyping() {
-    var messageInput = document.getElementById("message-input");
+    const messageInput = document.getElementById("message-input");
     messageInput.focus();
 }
 
 function copyToClipboard() {
-    var roomIdWithText = document.getElementById("current-room-id").innerText.split(" ");
-    var roomId = roomIdWithText[roomIdWithText.length-1];
+    const roomIdWithText = document.getElementById("current-room-id").innerText.split(" ");
+    const roomId = roomIdWithText[roomIdWithText.length - 1];
 
-    navigator.clipboard.writeText(roomId).then(function() {
+    navigator.clipboard.writeText(roomId).then(() => {
         showAlert("Room ID copied!", 3000);
-    }).catch(function(error) {
+    }).catch(error => {
         console.error('Failed to copy text: ', error);
     });
 }
 
 function showAlert(message, duration = 3000) {
-    var alertContainer = document.getElementById("alert-container");
+    const alertContainer = document.getElementById("alert-container");
     alertContainer.textContent = message;
     alertContainer.classList.remove("hidden");
     alertContainer.classList.add("show");
 
-    setTimeout(function() {
+    setTimeout(() => {
         alertContainer.classList.remove("show");
         alertContainer.classList.add("hidden");
     }, duration);
 }
-
-
 
