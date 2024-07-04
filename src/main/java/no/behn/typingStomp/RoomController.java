@@ -47,15 +47,15 @@ public class RoomController {
     }
 
     //TODO not in use
-    /*@PostMapping("/{roomId}/leave")
+    @PostMapping("/{roomId}/leave")
     public ResponseEntity<String> leaveRoom(@PathVariable String roomId, @RequestParam String sessionId) {
         if (roomService.getRoom(roomId) != null){
-            //roomService.removeClientFromRoom(roomId, sessionId);
+            roomService.removeClientFromRoom(roomId, sessionId);
             return ResponseEntity.ok("Room leaves");
         } else{
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Room not found.");
         }
-    }*/
+    }
     
 
     @GetMapping("/{roomId}/text")

@@ -81,7 +81,26 @@ function joinCreatedRoom(roomId) {
 
 
 function leaveRoom() {
-    
+    console.log("Leaving room with id: " + currentRoomId);
+    if (currentRoomId.length > 0) {
+        fetch("/api/rooms/" + currentRoomId +"/leave?sessionId="+ sessionId,{method: 'POST'})
+        .then(response => {
+            if (!response.ok) {
+                //showAlert("Please enter a valid room ID", 3000);
+                //return null;
+            } else {
+                currentRoomId = null;
+                document.getElementById("start-screen").style.display = "flex";
+                document.getElementById("game-screen").style.display = "none";
+
+                return response.text();
+            }
+        })
+        .catch(error => {
+            console.error('Failed to leave room:', error);
+            showAlert("Failed to leave room. Please try again later.", 3000);
+        });
+    }
 }
 
 function connectToRoom(roomId) {
