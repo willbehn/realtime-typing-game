@@ -5,6 +5,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.UUID;
 
@@ -46,7 +47,6 @@ public class RoomController {
         }
     }
 
-    //TODO not in use
     @PostMapping("/{roomId}/leave")
     public ResponseEntity<String> leaveRoom(@PathVariable String roomId, @RequestParam String sessionId) {
         if (roomService.getRoom(roomId) != null){
@@ -59,9 +59,14 @@ public class RoomController {
     
 
     @GetMapping("/{roomId}/text")
-    public String getMethodName(@RequestParam String roomId) {
-        return roomService.getRoom(roomId).getText();
+    public String getRoomText(@PathVariable String roomId) {
+        Room room = roomService.getRoom(roomId);
+        if (room != null) {
+            return room.getText();
+        } else {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Room not found");
+        }
     }
-    
+
 }
 

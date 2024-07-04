@@ -142,7 +142,7 @@ function sendMessage() {
 
 function fetchInitialData(roomId) {
     // Change with the room-specific endpoint later
-    fetch('/api/text')
+    fetch("/api/rooms/" + currentRoomId + "/text",{method: 'GET'})
         .then(response => response.text())
         .then(data => {
             console.log('Received fixed text:', data);
