@@ -26,9 +26,14 @@
     </div>
 
     <div id="game-screen" style="display:none;">
-        <div id="status"></div>
+        <div id="status-container">
+            <div id="status"></div>
+            <button onclick="startGame()">Start game</button>
+            <div id="timer"></div>
+        </div>
+
         <div id="fixedTextContainer" onclick="enableTyping()" style="cursor: pointer;"></div>
-        <input type="text" id="message-input" oninput="sendMessage()">
+        <input type="text" id="message-input" oninput="sendMessage()"disabled>
 
         <div id="room-id-container">
             <div id="current-room-id"></div>

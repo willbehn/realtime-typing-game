@@ -66,12 +66,14 @@ input[type="text"] {
     height: 100%;
 }
 
+#status-container,
 #room-id-container,
 #join-room-container {
     display: flex;
     align-items: center;
     justify-content: center;
 }
+
 
 #fixedTextContainer {
     margin: 20px;
@@ -125,6 +127,10 @@ input[type="text"] {
 
 .hidden {
     display: none;
+}
+
+.blur {
+    filter: blur(10px);
 }
 
 /* Additional styles for responsiveness */

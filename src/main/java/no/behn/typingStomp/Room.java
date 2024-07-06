@@ -7,10 +7,12 @@ public class Room {
     private final String id;
     private final Map<String, Integer> clientPositions = new ConcurrentHashMap<>();
     private final String text;
+    private boolean state;
 
     public Room(String id, String text) {
         this.id = id;
         this.text = text;
+        this.state = false;
     }
 
     public String getId() {
@@ -29,6 +31,14 @@ public class Room {
         if (clientPositions.containsKey(sessionId)){
             clientPositions.remove(sessionId);
         }
+    }
+
+    public void setStarted(){
+        state = true;
+    }
+
+    public boolean getState(){
+        return state;
     }
 
     public Map<String, Integer> getClientPositions() {

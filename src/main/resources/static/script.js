@@ -1,6 +1,7 @@
 let stompClient = null;
 let currentRoomId = null;
 let sessionId = null;
+let gameStarted = false;
 
 function createRoom() {
     fetch('/api/rooms', {
@@ -129,6 +130,11 @@ function connectToRoom(roomId) {
             console.log('Received player count: ' + playerCount);
             displayPlayerCount(playerCount);
         });
+
+        stompClient.subscribe('/topic/room/' + roomId + '/status', function(message) {
+            const status = message.body;
+            handleGameStatus(status);
+        });
     });
 }
 
@@ -198,6 +204,20 @@ function updatePositions(positions) {
     }
     fixedTextContainer.innerHTML = htmlContent;
 }
+
+function handleGameStatus(status){
+    if (status){
+        showAlert("Game started!", 3000);
+        document.getElementById("message-input").disabled = false;
+    }
+}
+
+
+function startGame() {
+    stompClient.send(`/app/room/${currentRoomId}/start`, {}, {});
+}
+
+
 
 function enableTyping() {
     const messageInput = document.getElementById("message-input");
