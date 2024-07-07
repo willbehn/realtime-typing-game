@@ -2,6 +2,7 @@ let stompClient = null;
 let currentRoomId = null;
 let sessionId = null;
 let gameStarted = false;
+let timerInterval;
 
 function createRoom() {
     fetch('/api/rooms', {
@@ -90,10 +91,12 @@ function leaveRoom() {
                 //showAlert("Please enter a valid room ID", 3000);
                 //return null;
             } else {
-                currentRoomId = null;
+                //startButton.disabled = false;
+                stopGameTimer();
                 document.getElementById("start-screen").style.display = "flex";
                 document.getElementById("game-screen").style.display = "none";
-
+                currentRoomId = null;
+                gameStarted = false;
                 return response.text();
             }
         })
@@ -108,18 +111,14 @@ function connectToRoom(roomId) {
     stompClient = Stomp.over(new SockJS('/ws'));
     console.log("SessionId recieved from server: " + sessionId);
 
-    
 
     stompClient.connect({}, function(frame) {
         console.log('Connected: ' + frame);
         document.getElementById("start-screen").style.display = "none";
         document.getElementById("game-screen").style.display = "flex";
 
-
-        // Fetch initial data
         fetchInitialData(roomId);
 
-        // Subscribe to topics
         stompClient.subscribe('/topic/room/' + roomId + '/positions', function(message) {
             const positions = JSON.parse(message.body);
             updatePositions(positions);
@@ -158,6 +157,9 @@ function fetchInitialData() {
         });
 
     stompClient.send("/app/room/" + currentRoomId + "/players", {}, "");
+
+    const timer = document.getElementById("timer");
+    timer.textContent = "0:00";
 }
 
 function displayFixedText(text) {
@@ -166,8 +168,8 @@ function displayFixedText(text) {
 }
 
 function displayPlayerCount(playerCount) {
-    const playerCountContainer = document.getElementById("status");
-    playerCountContainer.textContent = playerCount + " players connected";
+    const playerCountContainer = document.getElementById("player-count");
+    playerCountContainer.textContent = playerCount;
 }
 
 function updatePositions(positions) {
@@ -199,15 +201,18 @@ function handleGameStatus(status){
     if (status){
         showAlert("Game started!", 3000);
         document.getElementById("message-input").disabled = false;
+        startGameTimer();
+
+        const startButton = document.getElementById('start-game-button');
+        startButton.textContent = 'Game going!';
+        startButton.disabled = true;
+
     }
 }
-
 
 function startGame() {
     stompClient.send(`/app/room/${currentRoomId}/start`, {}, {});
 }
-
-
 
 function enableTyping() {
     const messageInput = document.getElementById("message-input");
@@ -224,6 +229,26 @@ function copyToClipboard() {
         console.error('Failed to copy text: ', error);
     });
 }
+
+function startGameTimer() {
+    let gameTime = 0;
+    const timerElement = document.getElementById('timer');
+
+    const updateTimer = () => {
+        gameTime++;
+        const minutes = Math.floor(gameTime / 60);
+        const seconds = gameTime % 60;
+        timerElement.textContent = `${minutes}:${seconds < 10 ? '0' + seconds : seconds}`;
+    };
+
+    updateTimer();
+    timerInterval = setInterval(updateTimer, 1000); 
+}
+
+function stopGameTimer() {
+    clearInterval(timerInterval); 
+}
+
 
 function showAlert(message, duration = 3000) {
     const alertContainer = document.getElementById("alert-container");

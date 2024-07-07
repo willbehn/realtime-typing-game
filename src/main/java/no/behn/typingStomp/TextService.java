@@ -7,7 +7,7 @@ public class TextService {
 
     public String getText() {
         // TODO bytt ut med faktisk henting av tekst fra en database etterhvert
-        return "Bier er flittige insekter som spiller en avgjørende rolle i økosystemet ved å pollinere blomster og bidra til avlingene våre. Deres organiserte samfunnsstruktur og evne til å produsere honning har fascinert mennesker i århundrer. Biers truede status har ledet til økt fokus på bevaring og beskyttelse av deres levesteder. Forskning på biers adferd og kommunikasjon gir verdifull innsikt i kompleksiteten i det naturlige verden.";
+        return "Bees play a vital role in our ecosystem as pollinators, facilitating the reproduction of plants and crops essential for human and animal food sources. They communicate through intricate dances to share information about food sources. With their collective efforts, bees contribute significantly to biodiversity and agricultural productivity, highlighting their crucial role in maintaining a balanced and sustainable environment.";
     }
 }
 

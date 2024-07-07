@@ -18,27 +18,31 @@
     /___/_/          /_/                    
         </pre>
         <h2></h2>
-        <button onclick="createRoom()">Create Room</button>
         <div id="join-room-container">
             <input type="text" id="join-room-id" placeholder="Enter Room ID to Join">
-            <button onclick="joinRoom()">Join Room</button>
+            <button id="join-room-button" onclick="joinRoom()">Join Room</button>
+            <button id="create-room-button" onclick="createRoom()">Create Room</button>
         </div>
     </div>
 
     <div id="game-screen" style="display:none;">
         <div id="status-container">
-            <div id="status"></div>
-            <button onclick="startGame()">Start game</button>
             <div id="timer"></div>
+            <button id="start-game-button" onclick="startGame()">Start game</button>
         </div>
 
         <div id="fixedTextContainer" onclick="enableTyping()" style="cursor: pointer;"></div>
-        <input type="text" id="message-input" oninput="sendMessage()"disabled>
+        <input type="text" id="message-input" oninput="sendMessage()"disabled placeholder="Type here">
 
+        <h4>Room info</h4>
         <div id="room-id-container">
-            <div id="current-room-id"></div>
-            <button onclick="copyToClipboard()">Copy room id</button>
-            <button onclick="leaveRoom()">Leave room</button>
+            <div>
+                <div>Player Count: <span id="player-count">0</span></div>
+                <div id="current-room-id"></div>
+            </div>
+                
+            <button id="copy-room-id-button" onclick="copyToClipboard()">Copy room id</button>
+            <button id="leave-room-button" onclick="leaveRoom()">Leave room</button>
         </div>
     </div>
 

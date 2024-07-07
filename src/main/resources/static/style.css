@@ -2,8 +2,8 @@
 
 body {
     font-family: 'Roboto Mono', monospace;
-    background-color: #2B2B2B; 
-    color: #E0E0E0; 
+    background-color: #1E1E2F;
+    color: #FFFFFF;
     margin: 0;
     padding: 0;
     display: flex;
@@ -13,16 +13,10 @@ body {
     height: 100vh;
 }
 
-h2 {
-    color: #FFD700; 
-    font-family: 'Roboto Mono', monospace;
-    font-size: 2rem;
-}
-
 pre#ascii-art {
     font-family: 'Roboto Mono', monospace;
-    color: #E91E63;
-    font-size: 1rem; 
+    color: #FF6F61;
+    font-size: 1.5rem;
     white-space: pre;
     margin: 0;
     padding: 0;
@@ -33,26 +27,63 @@ button {
     margin: 10px;
     border: none;
     border-radius: 5px;
-    background-color: #FFC107;
-    color: #2B2B2B; 
+    background-color: #1976D2; 
+    color: #FFFFFF;
     cursor: pointer;
     font-size: 16px;
     font-family: 'Roboto Mono', monospace;
-    transition: background-color 0.3s ease;
+    transition: background-color 0.3s ease, color 0.3s ease, transform 0.3s ease;
 }
 
 button:hover {
-    background-color: #E91E63;
+    background-color: #FF6F61; 
+    color: white;
+    transform: scale(1.05);
+}
+
+#copy-room-id-button,
+#create-room-button {
+    background-color: #388E3C; 
+    color: white;
+}
+
+#copy-room-id-button:hover,
+#create-room-button:hover {
+    background-color: #2E7D32; 
+}
+
+#join-room-button {
+    background-color: #FF7043; 
+    color: white;
+}
+
+#start-game-button {
+    background-color: #FF7043; 
+    color: white;
+}
+
+#join-room-button:hover,
+#start-game-button:hover {
+    background-color: #FF8A65; 
+}
+
+#leave-room-button {
+    background-color: #EF5350; 
+    color: white;
+}
+
+#leave-room-button:hover {
+    background-color: #E57373; 
 }
 
 input[type="text"] {
     padding: 10px;
     margin: 10px;
-    border: 1px solid #ccc;
+    border: 1px;
     border-radius: 5px;
     font-size: 16px;
-    background-color: #333; 
-    color: #E0E0E0; 
+    background-color: #333;
+    color: #FFFFFF;
     font-family: 'Roboto Mono', monospace;
 }
 
@@ -63,28 +94,50 @@ input[type="text"] {
     align-items: center;
     justify-content: center;
     width: 100%;
-    height: 100%;
 }
 
 #status-container,
 #room-id-container,
 #join-room-container {
     display: flex;
+    flex-wrap: wrap;
     align-items: center;
     justify-content: center;
 }
 
+#status-container {
+    margin-bottom: 10px;
+}
+
+#room-info {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+}
+
+#room-info > * {
+    margin: 5px;
+}
+
+#current-room-id {
+    font-size: 14px;
+    color: #FFFFFF;
+}
 
 #fixedTextContainer {
     margin: 20px;
-    padding: 20px; 
+    padding: 20px;
     width: 80%;
-    max-width: 600px;
-    min-height: 150px; 
-    line-height: 1.6; 
-    font-size: 18px; 
-    color: #E0E0E0; 
-    overflow-wrap: break-word; 
+    max-width: 650px;
+    min-height: 150px;
+    line-height: 1.6;
+    font-size: 18px;
+    color: #FFFFFF;
+    /*background-color: #2C2C3E;*/
+    border-radius: 8px;
+    overflow-wrap: break-word;
 }
 
 #message-input {
@@ -92,19 +145,12 @@ input[type="text"] {
     max-width: 600px;
 }
 
-#status,
-#current-room-id {
-    margin: 10px;
-    font-size: 14px;
-    color: #E0E0E0; 
-}
-
 .highlight-client-self {
-    background-color: #28a745;
+    background-color: #66BB6A; 
 }
 
 .highlight-client-opponent {
-    background-color: #E91E63;
+    background-color: #FF4343; 
 }
 
 #alert-container {
@@ -112,10 +158,10 @@ input[type="text"] {
     top: 20px;
     right: 20px;
     padding: 10px 20px;
-    background-color: #28a745;
+    background-color: #66BB6A; 
     color: white;
     border-radius: 5px;
-    /*box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);*/
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     z-index: 1000;
     opacity: 0;
     transition: opacity 0.5s;
@@ -129,35 +175,3 @@ input[type="text"] {
     display: none;
 }
 
-.blur {
-    filter: blur(10px);
-}
-
-/* Additional styles for responsiveness */
-@media (max-width: 600px) {
-    /*button {
-        width: 80%;
-        font-size: 14px;
-    }*/
-
-    input[type="text"] {
-        width: 80%;
-        font-size: 14px;
-    }
-
-    #fixedTextContainer {
-        width: 90%;
-    }
-
-    #message-input {
-        width: 90%;
-    }
-
-    #join-room-container {
-        flex-direction: column;
-    }
-
-    #room-id-container {
-        flex-direction: column;
-    }
-}
