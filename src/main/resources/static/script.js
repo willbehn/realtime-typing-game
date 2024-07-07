@@ -125,7 +125,7 @@ function connectToRoom(roomId) {
             updatePositions(positions);
         });
 
-        stompClient.subscribe('/topic/players', function(message) {
+        stompClient.subscribe('/topic/room/' + roomId + '/players', function(message) {
             const playerCount = message.body;
             console.log('Received player count: ' + playerCount);
             displayPlayerCount(playerCount);
@@ -146,8 +146,7 @@ function sendMessage() {
     }
 }
 
-function fetchInitialData(roomId) {
-    // Change with the room-specific endpoint later
+function fetchInitialData() {
     fetch("/api/rooms/" + currentRoomId + "/text",{method: 'GET'})
         .then(response => response.text())
         .then(data => {
@@ -158,16 +157,7 @@ function fetchInitialData(roomId) {
             console.error('Failed to fetch fixed text:', error);
         });
 
-    // Change with room specific playercount later
-    fetch('/app/players')
-        .then(response => response.text())
-        .then(data => {
-            console.log('Received player count:', data);
-            stompClient.send('/app/players', {}, data);
-        })
-        .catch(error => {
-            console.error('Failed to fetch player count:', error);
-        });
+    stompClient.send("/app/room/" + currentRoomId + "/players", {}, "");
 }
 
 function displayFixedText(text) {

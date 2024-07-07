@@ -51,10 +51,4 @@ public class PositionController {
         }
         return roomClientPositions;
     }
-
-    @MessageMapping("/players")
-    @SendTo("/topic/players")
-    public String sendPlayerCount(){
-        return Integer.toString(playerCount);
-    }
 }

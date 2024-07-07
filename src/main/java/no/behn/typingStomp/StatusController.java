@@ -40,4 +40,11 @@ public class StatusController {
             return false;
         }
     }
+
+
+    @MessageMapping("room/{roomId}/players")
+    @SendTo("/topic/room/{roomId}/players")
+    public String getPlayerCount(@DestinationVariable String roomId){
+        return Integer.toString(roomService.getRoom(roomId).getClientCount());
+    }
 }
