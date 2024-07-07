@@ -37,10 +37,17 @@ public class RoomController {
 
     @PostMapping("/{roomId}/join")
     public ResponseEntity<String> joinRoom(@PathVariable String roomId) {
-        if (roomService.getRoom(roomId) != null){
-            String sessionId = UUID.randomUUID().toString();
-            roomService.addClientToRoom(roomId, sessionId);
-            return ResponseEntity.ok(sessionId);
+        Room room = roomService.getRoom(roomId);
+
+        if (room != null){
+            if (!room.getState()){
+                String sessionId = UUID.randomUUID().toString();
+                roomService.addClientToRoom(roomId, sessionId);
+                return ResponseEntity.ok(sessionId);
+            } else {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Room in progress");
+            }
+
 
         } else{
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Room not found.");

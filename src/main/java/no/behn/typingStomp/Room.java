@@ -12,7 +12,7 @@ public class Room {
     public Room(String id, String text) {
         this.id = id;
         this.text = text;
-        this.state = false;
+        this.state = false; //State represents if the game is ongoing or not, true if started, else if not
     }
 
     public String getId() {

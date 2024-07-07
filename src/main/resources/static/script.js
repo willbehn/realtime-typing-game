@@ -36,7 +36,7 @@ function joinRoom() {
         fetch("/api/rooms/" + roomId +"/join",{method: 'POST'})
         .then(response => {
             if (!response.ok) {
-                showAlert("Please enter a valid room ID", 3000);
+                showAlert("Room not available ", 3000);
                 return null;
             } else {
                 return response.text();
