@@ -131,8 +131,8 @@ function connectToRoom(roomId) {
         });
 
         stompClient.subscribe('/topic/room/' + roomId + '/status', function(message) {
-            const status = message.body;
-            handleGameStatus(status);
+            const status = JSON.parse(message.body); 
+            handleGameStatus(status); 
         });
     });
 }
@@ -182,6 +182,11 @@ function updatePositions(positions) {
     for (let i = 0; i < fixedText.length; i++) {
         let charClass = '';
         for (const sessionIdTest in positions) {
+            if (positions[sessionIdTest] === (fixedText.length)){
+                stompClient.send(`/app/room/${currentRoomId}/player/${sessionId}/done`, {}, {});
+                return;
+            }
+
             if (positions[sessionIdTest] === i) {
                 if (sessionIdTest == sessionId){
                     charClass = 'highlight-client-self';
@@ -197,8 +202,17 @@ function updatePositions(positions) {
     fixedTextContainer.innerHTML = htmlContent;
 }
 
-function handleGameStatus(status){
-    if (status){
+function handleGameStatus(status) {
+    console.log(status);
+
+    if (status.done) {
+        document.getElementById("message-input").disabled = true;
+        const endTimeKeys = Object.keys(status.endTime);
+        showAlert("Player with id: " + endTimeKeys + " won!", 10000);
+        setTimeout(function() {
+            leaveRoom();
+        }, 10000);
+    } else if (status.gameStarted) {
         showAlert("Game started!", 3000);
         document.getElementById("message-input").disabled = false;
         startGameTimer();
@@ -206,9 +220,9 @@ function handleGameStatus(status){
         const startButton = document.getElementById('start-game-button');
         startButton.textContent = 'Game going!';
         startButton.disabled = true;
-
-    }
+    } 
 }
+
 
 function startGame() {
     stompClient.send(`/app/room/${currentRoomId}/start`, {}, {});
@@ -262,3 +276,23 @@ function showAlert(message, duration = 3000) {
     }, duration);
 }
 
+/*function showPopup(message) {
+    const popup = document.getElementById("popup");
+    const popupMessage = document.getElementById("popup-message");
+
+    // Set the popup message
+    popupMessage.textContent = message;
+
+    // Show the popup
+    popup.classList.remove("hidden");
+}
+
+<div id="popup" class="hidden">
+        <div id="popup-overlay"></div>
+        <div id="popup-content">
+            <span id="close-popup-button">&times;</span>
+            <div id="popup-message"></div>
+        </div>
+    </div>
+
+    */

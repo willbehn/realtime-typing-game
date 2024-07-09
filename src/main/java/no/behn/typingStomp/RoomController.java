@@ -26,7 +26,6 @@ public class RoomController {
     public Room createRoom() {
         String text = textService.getText();
         Room room = roomService.createRoom(text);
-        System.out.println("Creating room with id: " + room.getId());
         return room;
     }
 
@@ -47,7 +46,6 @@ public class RoomController {
             } else {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Room in progress");
             }
-
 
         } else{
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Room not found.");

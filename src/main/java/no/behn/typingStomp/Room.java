@@ -6,13 +6,16 @@ import java.util.concurrent.ConcurrentHashMap;
 public class Room {
     private final String id;
     private final Map<String, Integer> clientPositions = new ConcurrentHashMap<>();
+    private final Map<String, Integer> endTime = new ConcurrentHashMap<>();
     private final String text;
-    private boolean state;
+    private boolean gameStarted;
+    private boolean isDone;
 
     public Room(String id, String text) {
         this.id = id;
         this.text = text;
-        this.state = false; //State represents if the game is ongoing or not, true if started, else if not
+        this.gameStarted = false; //State represents if the game is ongoing or not, true if started, else if not
+        this.isDone = false;
     }
 
     public String getId() {
@@ -34,11 +37,19 @@ public class Room {
     }
 
     public void setStarted(){
-        state = true;
+        gameStarted = true;
+    }
+
+    public void setDone(){
+        isDone = true;
     }
 
     public boolean getState(){
-        return state;
+        return gameStarted;
+    }
+
+    public boolean getDone(){
+        return isDone;
     }
 
     public Map<String, Integer> getClientPositions() {

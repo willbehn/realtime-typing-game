@@ -2,14 +2,14 @@ package no.behn.typingStomp;
 
 import org.springframework.stereotype.Service;
 
-import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 
 @Service
 public class RoomService {
 
-    private Map<String, Room> rooms = new HashMap<>();
+    private Map<String, Room> rooms = new ConcurrentHashMap<>();
 
     public Room createRoom(String text) {
         String roomId = generateRoomId();
