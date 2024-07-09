@@ -179,3 +179,53 @@ input[type="text"] {
 }
 
 
+
+.modal {
+    display: none;
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(30, 30, 47, 0.8); 
+    z-index: 1001;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .modal-content {
+    background-color: #2C2C3E; 
+    margin: auto;
+    padding: 20px;
+    border-radius: 8px;
+    width: 80%;
+    max-width: 450px;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+  }
+  
+  .close-button {
+    color: #FFFFFF;
+    float: right;
+    font-size: 25px;
+    font-weight: bold;
+    line-height: 1;
+    cursor: pointer;
+    transition: color 0.3s;
+  }
+  
+  .close-button:hover,
+  .close-button:focus {
+    color: #FF6F61; 
+  }
+  
+  #popup-message {
+    color: #FFFFFF; 
+    font-family: 'Roboto Mono', monospace;
+    text-align: center;
+  }
+  
+  
+  
+  
+
+

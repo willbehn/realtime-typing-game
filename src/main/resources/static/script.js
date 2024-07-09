@@ -208,7 +208,7 @@ function handleGameStatus(status) {
     if (status.done) {
         document.getElementById("message-input").disabled = true;
         const endTimeKeys = Object.keys(status.endTime);
-        showAlert("Player with id: " + endTimeKeys + " won!", 10000);
+        showPopup("Player with id: " + endTimeKeys + " won!");
         setTimeout(function() {
             leaveRoom();
         }, 10000);
@@ -276,23 +276,26 @@ function showAlert(message, duration = 3000) {
     }, duration);
 }
 
-/*function showPopup(message) {
-    const popup = document.getElementById("popup");
-    const popupMessage = document.getElementById("popup-message");
-
-    // Set the popup message
-    popupMessage.textContent = message;
-
-    // Show the popup
-    popup.classList.remove("hidden");
-}
-
-<div id="popup" class="hidden">
-        <div id="popup-overlay"></div>
-        <div id="popup-content">
-            <span id="close-popup-button">&times;</span>
-            <div id="popup-message"></div>
-        </div>
-    </div>
-
-    */
+document.addEventListener("DOMContentLoaded", function(){
+    var modal = document.getElementById("popup-modal");
+    var closeButton = document.getElementsByClassName("close-button")[0];
+  
+    closeButton.onclick = function() {
+      modal.style.display = "none";
+    }
+  
+    window.onclick = function(event) {
+      if (event.target === modal) {
+        modal.style.display = "none";
+      }
+    }
+  });
+  
+ 
+  function showPopup(message) {
+    var modal = document.getElementById("popup-modal");
+    var messageParagraph = document.getElementById("popup-message");
+    messageParagraph.innerText = message;
+    modal.style.display = "block";
+  }
+  
