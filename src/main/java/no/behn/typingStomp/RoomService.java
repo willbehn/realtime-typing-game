@@ -2,6 +2,8 @@ package no.behn.typingStomp;
 
 import org.springframework.stereotype.Service;
 
+import no.behn.typingStomp.exception.RoomNotFoundException;
+
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
@@ -21,7 +23,11 @@ public class RoomService {
     }
 
     public Room getRoom(String roomId) {
-        return rooms.get(roomId);
+        Room room = rooms.get(roomId);
+
+        if (room != null){
+            return room;
+        } else throw new RoomNotFoundException("Room with id: " + roomId + " not found");
     }
 
     public void addClientToRoom(String roomId, String sessionId) {
@@ -29,7 +35,7 @@ public class RoomService {
         if (room != null) {
             System.out.println("Adding client with sessionId: " + sessionId + " to roomId: " + roomId);
             room.addClient(sessionId);;
-        }
+        } else throw new RoomNotFoundException("Room with id: " + roomId + " not found");
     }
 
     public void removeClientFromRoom(String roomId, String sessionId) {
@@ -42,7 +48,7 @@ public class RoomService {
             if (room.getClientCount() == 0){
                 rooms.remove(roomId);
             }
-        }
+        } else throw new RoomNotFoundException("Room with id: " + roomId + " not found");
     }
 
     private String generateRoomId() {

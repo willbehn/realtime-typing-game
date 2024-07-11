@@ -7,6 +7,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
+import no.behn.typingStomp.exception.RoomNotFoundException;
+
 import java.util.UUID;
 
 @RestController
@@ -31,14 +33,21 @@ public class RoomController {
 
     @GetMapping("/{roomId}")
     public Room getRoom(@PathVariable String roomId) {
-        return roomService.getRoom(roomId);
+        try {
+            return roomService.getRoom(roomId);
+
+        } catch (RoomNotFoundException exc){
+            throw new ResponseStatusException(
+              HttpStatus.NOT_FOUND, "Room not found", exc);
+       }
     }
 
     @PostMapping("/{roomId}/join")
     public ResponseEntity<String> joinRoom(@PathVariable String roomId) {
-        Room room = roomService.getRoom(roomId);
+        try{
+            Room room = roomService.getRoom(roomId);
 
-        if (room != null){
+            //TODO add exception for room in progress not joinable
             if (!room.getState()){
                 String sessionId = UUID.randomUUID().toString();
                 roomService.addClientToRoom(roomId, sessionId);
@@ -47,31 +56,35 @@ public class RoomController {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Room in progress");
             }
 
-        } else{
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Room not found.");
-        }
+        } catch (RoomNotFoundException exc){
+            throw new ResponseStatusException(
+              HttpStatus.NOT_FOUND, "Room not found", exc);
+       }
     }
 
     @PostMapping("/{roomId}/leave")
     public ResponseEntity<String> leaveRoom(@PathVariable String roomId, @RequestParam String sessionId) {
-        if (roomService.getRoom(roomId) != null){
+        try {
             roomService.removeClientFromRoom(roomId, sessionId);
             return ResponseEntity.ok("Room leaves");
-        } else{
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Room not found.");
-        }
+
+        } catch (RoomNotFoundException exc){
+            throw new ResponseStatusException(
+              HttpStatus.NOT_FOUND, "Room not found", exc);
+       }
     }
     
 
     @GetMapping("/{roomId}/text")
     public String getRoomText(@PathVariable String roomId) {
-        Room room = roomService.getRoom(roomId);
-        if (room != null) {
+        try {
+            Room room = roomService.getRoom(roomId);
             return room.getText();
-        } else {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Room not found");
-        }
-    }
 
+        } catch (RoomNotFoundException exc){
+            throw new ResponseStatusException(
+              HttpStatus.NOT_FOUND, "Room not found", exc);
+       }
+    }
 }
 
