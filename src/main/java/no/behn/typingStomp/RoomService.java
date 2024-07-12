@@ -48,7 +48,7 @@ public class RoomService {
     }
 
     public String addClientToRoom(String roomId) {
-        Room room = rooms.get(roomId);
+        Room room = getRoom(roomId);
         
         String sessionId = UUID.randomUUID().toString();
         System.out.println("Adding client with sessionId: " + sessionId + " to roomId: " + roomId);
@@ -57,7 +57,7 @@ public class RoomService {
     }
 
     public void removeClientFromRoom(String roomId, String sessionId) {
-        Room room = rooms.get(roomId);
+        Room room = getRoom(roomId);
         System.out.println("Removing client with sessionId: " + sessionId + " from roomId: " + roomId);
         room.removeClient(sessionId);
 
