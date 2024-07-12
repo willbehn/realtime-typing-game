@@ -33,42 +33,46 @@ public class RoomService {
     public StateDto startGameInRoom(String roomId) {
         Room room = getRoom(roomId);
 
-        if (room != null){
-            room.setStarted();
-            System.out.println(room.getStartTime() + ": Started room with id: " + roomId);
-            return new StateDto(room.getState(), new ConcurrentHashMap<>(), room.getDone());
-        } else throw new RoomNotFoundException("Room with id: " + roomId + " not found");
+        room.setStarted();
+        System.out.println(room.getStartTime() + ": Started room with id: " + roomId);
+        return new StateDto(room.getState(), room.getClientEndtimes(), room.getDone());
+        
     }
 
     public StateDto markPlayerAsDone(String roomId, String sessionId) {
         Room room = getRoom(roomId);
 
-        if (room != null){
-            room.setDone();
-            room.addClientEndTime(sessionId, room.getDurationInSeconds());
-            return new StateDto(room.getState(), room.getClientEndtimes(), room.getDone());
-        } else throw new RoomNotFoundException("Room with id: " + roomId + " not found");
+        room.setDone();
+        room.addClientEndTime(sessionId, room.getDurationInSeconds());
+        return new StateDto(room.getState(), room.getClientEndtimes(), room.getDone());
     }
 
-    public void addClientToRoom(String roomId, String sessionId) {
+    public String addClientToRoom(String roomId) {
         Room room = rooms.get(roomId);
-        if (room != null) {
-            System.out.println("Adding client with sessionId: " + sessionId + " to roomId: " + roomId);
-            room.addClient(sessionId);;
-        } else throw new RoomNotFoundException("Room with id: " + roomId + " not found");
+        
+        String sessionId = UUID.randomUUID().toString();
+        System.out.println("Adding client with sessionId: " + sessionId + " to roomId: " + roomId);
+        room.addClient(sessionId);
+        return sessionId;
     }
 
     public void removeClientFromRoom(String roomId, String sessionId) {
         Room room = rooms.get(roomId);
-        if (room != null) {
-            System.out.println("Removing client with sessionId: " + sessionId + " from roomId: " + roomId);
-            room.removeClient(sessionId);
+        System.out.println("Removing client with sessionId: " + sessionId + " from roomId: " + roomId);
+        room.removeClient(sessionId);
 
-            // Removes the room if there are no players remaining
-            if (room.getClientCount() == 0){
-                rooms.remove(roomId);
-            }
-        } else throw new RoomNotFoundException("Room with id: " + roomId + " not found");
+        // Removes the room if there are no players remaining
+        if (room.getClientCount() == 0){
+            rooms.remove(roomId);
+        }
+    }
+
+    public String getClientCount(String roomId){
+        return Integer.toString(getRoom(roomId).getClientCount());
+    }
+
+    public String getRoomText(String roomId){
+        return getRoom(roomId).getText();
     }
 
     private String generateRoomId() {

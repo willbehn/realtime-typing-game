@@ -9,8 +9,6 @@ import org.springframework.web.server.ResponseStatusException;
 
 import no.behn.typingStomp.exception.RoomNotFoundException;
 
-import java.util.UUID;
-
 @RestController
 @RequestMapping("/api/rooms")
 public class RoomController {
@@ -27,8 +25,8 @@ public class RoomController {
     @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public Room createRoom() {
         String text = textService.getText();
-        Room room = roomService.createRoom(text);
-        return room;
+        return roomService.createRoom(text);
+        
     }
 
     @GetMapping("/{roomId}")
@@ -45,17 +43,10 @@ public class RoomController {
     @PostMapping("/{roomId}/join")
     public ResponseEntity<String> joinRoom(@PathVariable String roomId) {
         try{
-            Room room = roomService.getRoom(roomId);
-
             //TODO add exception for room in progress not joinable
-            if (!room.getState()){
-                String sessionId = UUID.randomUUID().toString();
-                roomService.addClientToRoom(roomId, sessionId);
-                return ResponseEntity.ok(sessionId);
-            } else {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Room in progress");
-            }
-
+            String sessionId = roomService.addClientToRoom(roomId);
+            return ResponseEntity.ok(sessionId);
+            
         } catch (RoomNotFoundException exc){
             throw new ResponseStatusException(
               HttpStatus.NOT_FOUND, "Room not found", exc);
@@ -78,8 +69,7 @@ public class RoomController {
     @GetMapping("/{roomId}/text")
     public String getRoomText(@PathVariable String roomId) {
         try {
-            Room room = roomService.getRoom(roomId);
-            return room.getText();
+            return roomService.getRoomText(roomId);
 
         } catch (RoomNotFoundException exc){
             throw new ResponseStatusException(

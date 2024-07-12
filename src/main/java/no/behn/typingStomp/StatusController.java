@@ -1,7 +1,5 @@
 package no.behn.typingStomp;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,7 +48,7 @@ public class StatusController {
     @SendTo("/topic/room/{roomId}/players")
     public String getPlayerCount(@DestinationVariable String roomId){
         try {
-            return Integer.toString(roomService.getRoom(roomId).getClientCount());
+            return roomService.getClientCount(roomId);
         } catch (RoomNotFoundException exc) {
             return "0";
         }
