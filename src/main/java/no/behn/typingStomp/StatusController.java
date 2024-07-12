@@ -10,6 +10,8 @@ import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.stereotype.Controller;
 
+import no.behn.typingStomp.exception.RoomNotFoundException;
+
 @Controller
 public class StatusController {
     
@@ -24,12 +26,11 @@ public class StatusController {
     @SendTo("/topic/room/{roomId}/status")
     public StateDto startSession(@DestinationVariable String roomId) {
         System.out.println("Starting game in room: " + roomId);
-        Room room = roomService.getRoom(roomId);
-        if (room != null) {
-            room.setStarted();
-            return new StateDto(room.getState(), new ConcurrentHashMap<>(), room.getDone());
+        
+        try {
+            return roomService.startGameInRoom(roomId);
 
-        } else {
+        } catch (RoomNotFoundException exc) {
             return new StateDto(false, new ConcurrentHashMap<>(), false);
         }
     }
@@ -37,16 +38,9 @@ public class StatusController {
     @MessageMapping("/room/{roomId}/player/{sessionId}/done")
     @SendTo("/topic/room/{roomId}/status")
     public StateDto playerDone(@DestinationVariable String roomId, @DestinationVariable String sessionId) {
-        Room room =roomService.getRoom(roomId);
-        if (room != null) {
-            room.setDone();
-
-            // Logic to mark player as done
-            Map<String, Integer> endTime = new HashMap<>();
-            endTime.put(sessionId, 200); // Example endTime
-            return new StateDto(room.getState(), endTime, room.getDone());
-
-        } else {
+        try {
+            return roomService.markPlayerAsDone(roomId, sessionId);
+        } catch (RoomNotFoundException e) {
             return new StateDto(false, new ConcurrentHashMap<>(), false);
         }
     }
@@ -55,6 +49,10 @@ public class StatusController {
     @MessageMapping("room/{roomId}/players")
     @SendTo("/topic/room/{roomId}/players")
     public String getPlayerCount(@DestinationVariable String roomId){
-        return Integer.toString(roomService.getRoom(roomId).getClientCount());
+        try {
+            return Integer.toString(roomService.getRoom(roomId).getClientCount());
+        } catch (RoomNotFoundException exc) {
+            return "0";
+        }
     }
 }

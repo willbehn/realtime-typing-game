@@ -30,6 +30,26 @@ public class RoomService {
         } else throw new RoomNotFoundException("Room with id: " + roomId + " not found");
     }
 
+    public StateDto startGameInRoom(String roomId) {
+        Room room = getRoom(roomId);
+
+        if (room != null){
+            room.setStarted();
+            System.out.println(room.getStartTime() + ": Started room with id: " + roomId);
+            return new StateDto(room.getState(), new ConcurrentHashMap<>(), room.getDone());
+        } else throw new RoomNotFoundException("Room with id: " + roomId + " not found");
+    }
+
+    public StateDto markPlayerAsDone(String roomId, String sessionId) {
+        Room room = getRoom(roomId);
+
+        if (room != null){
+            room.setDone();
+            room.addClientEndTime(sessionId, room.getDurationInSeconds());
+            return new StateDto(room.getState(), room.getClientEndtimes(), room.getDone());
+        } else throw new RoomNotFoundException("Room with id: " + roomId + " not found");
+    }
+
     public void addClientToRoom(String roomId, String sessionId) {
         Room room = rooms.get(roomId);
         if (room != null) {

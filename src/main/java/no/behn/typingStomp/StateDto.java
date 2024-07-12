@@ -6,9 +6,9 @@ import java.util.concurrent.ConcurrentHashMap;
 public class StateDto {
     private boolean gameStarted;
     private boolean isDone;
-    private Map<String, Integer> endTime = new ConcurrentHashMap<>();
+    private Map<String, Long> endTime = new ConcurrentHashMap<>();
 
-    public StateDto(boolean gameStarted, Map<String, Integer> endTime, boolean isDone) {
+    public StateDto(boolean gameStarted, Map<String, Long> endTime, boolean isDone) {
         this.gameStarted = gameStarted;
         this.endTime = endTime;
         this.isDone = isDone;
@@ -30,11 +30,11 @@ public class StateDto {
         isDone = done;
     }
 
-    public Map<String, Integer> getEndTime() {
+    public Map<String, Long> getEndTime() {
         return endTime;
     }
 
-    public void setEndTime(Map<String, Integer> endTime) {
+    public void setEndTime(Map<String, Long> endTime) {
         this.endTime = endTime;
     }
 }
