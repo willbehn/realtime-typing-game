@@ -22,6 +22,7 @@ public class PositionController {
     @MessageMapping("/room/{roomId}")
     @SendTo("/topic/room/{roomId}/positions")
     public Map<String, Integer> handlePosition(@DestinationVariable String roomId, String message, StompHeaderAccessor headerAccessor) {
+        //TODO move to a PositionService
         String sessionId = headerAccessor.getFirstNativeHeader("sessionId");
         Room room = roomService.getRoom(roomId);
         Map<String, Integer> roomClientPositions = room.getClientPositions();

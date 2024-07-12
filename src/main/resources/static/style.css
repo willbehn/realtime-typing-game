@@ -90,6 +90,33 @@ input[type="text"] {
     font-family: 'Roboto Mono', monospace;
 }
 
+#player-name,
+#create-room-button {
+    width: 400px;
+    box-sizing: border-box;
+}
+
+#join-room-container {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    width: 400px;
+    box-sizing: border-box;
+}
+
+#join-room-container input[type="text"],
+#join-room-container button {
+    flex-grow: 1;
+    margin: 5px;
+}
+
+#join-room-container button {
+    flex-grow: 0;
+    margin-left: 10px; /* Optional: adjust to balance the spacing */
+}
+
+
+
 #start-screen,
 #game-screen {
     display: flex;
@@ -100,8 +127,7 @@ input[type="text"] {
 }
 
 #status-container,
-#room-id-container,
-#join-room-container {
+#room-id-container {
     display: flex;
     flex-wrap: wrap;
     align-items: center;
