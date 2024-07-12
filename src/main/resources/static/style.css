@@ -2,8 +2,8 @@
 
 body {
     font-family: 'Roboto Mono', monospace;
-    background-color: #1E1E2F;
-    color: #FFFFFF;
+    background-color: #292F36; 
+    color: #D1D5DB; 
     margin: 0;
     padding: 0;
     display: flex;
@@ -15,7 +15,7 @@ body {
 
 pre#ascii-art {
     font-family: 'Roboto Mono', monospace;
-    color: #FF6F61;
+    color: #FF6F61; 
     font-size: 1.5rem;
     white-space: pre;
     margin: 0;
@@ -27,67 +27,64 @@ button {
     margin: 10px;
     border: none;
     border-radius: 5px;
-    background-color: #1976D2; 
-    color: #FFFFFF;
+    background-color: #14B8A6; 
+    color: #FFFFFF; 
     cursor: pointer;
     font-size: 16px;
     font-family: 'Roboto Mono', monospace;
-    transition: background-color 0.3s ease, color 0.3s ease, transform 0.3s ease;
+    transition: background-color 0.3s ease;
 }
 
 button:hover {
-    background-color: #FF6F61; 
-    color: white;
+    background-color: #2AD2C9; 
     transform: scale(1.05);
 }
 
 #copy-room-id-button,
 #create-room-button {
-    background-color: #388E3C; 
-    color: white;
+    background-color: #EC6E4C; 
 }
 
 #copy-room-id-button:hover,
 #create-room-button:hover {
-    /*background-color: #2E7D32; */
+    background-color: #F48B79; 
     transform: scale(1.05);
 }
 
-#join-room-button {
-    background-color: #FF7043; 
-    color: white;
-}
-
+#join-room-button,
 #start-game-button {
-    background-color: #FF7043; 
-    color: white;
+    background-color: #14B8A6; 
 }
 
 #join-room-button:hover,
 #start-game-button:hover {
-    /*background-color: #FF8A65; */
+    background-color: #2AD2C9; 
     transform: scale(1.05);
 }
 
 #leave-room-button {
-    background-color: #EF5350; 
-    color: white;
+    background-color: #EC6E4C; 
 }
 
 #leave-room-button:hover {
-    /*background-color: #E57373; */
+    background-color: #F48B79; 
     transform: scale(1.05);
 }
 
 input[type="text"] {
     padding: 10px;
-    margin: 10px;
-    border: 1px;
+    margin: 5px;
     border-radius: 5px;
     font-size: 16px;
-    background-color: #333;
-    color: #FFFFFF;
+    background-color: #1E252B; 
+    color: #D1D5DB; 
     font-family: 'Roboto Mono', monospace;
+    border: none; 
+    outline: none; 
+}
+
+input[type="text"]:focus {
+    box-shadow: 0 0 3px #2AD2C9; 
 }
 
 #player-name,
@@ -108,11 +105,6 @@ input[type="text"] {
 #join-room-container button {
     flex-grow: 1;
     margin: 5px;
-}
-
-#join-room-container button {
-    flex-grow: 0;
-    margin-left: 10px; /* Optional: adjust to balance the spacing */
 }
 
 
@@ -152,7 +144,6 @@ input[type="text"] {
 
 #current-room-id {
     font-size: 14px;
-    color: #FFFFFF;
 }
 
 #fixedTextContainer {
@@ -163,8 +154,6 @@ input[type="text"] {
     min-height: 150px;
     line-height: 1.6;
     font-size: 18px;
-    color: #FFFFFF;
-    /*background-color: #2C2C3E;*/
     border-radius: 8px;
     overflow-wrap: break-word;
 }
@@ -175,11 +164,11 @@ input[type="text"] {
 }
 
 .highlight-client-self {
-    background-color: #66BB6A; 
+    background-color: #80cb83; 
 }
 
 .highlight-client-opponent {
-    background-color: #FF4343; 
+    background-color: #ff8282; 
 }
 
 #alert-container {
@@ -187,7 +176,7 @@ input[type="text"] {
     top: 20px;
     right: 20px;
     padding: 10px 20px;
-    background-color: #66BB6A; 
+    background-color: #5C6BC0; 
     color: white;
     border-radius: 5px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
@@ -205,7 +194,6 @@ input[type="text"] {
 }
 
 
-
 .modal {
     display: none;
     position: fixed;
@@ -213,42 +201,43 @@ input[type="text"] {
     top: 0;
     width: 100%;
     height: 100%;
-    background: rgba(30, 30, 47, 0.8); 
+    background: rgba(41, 47, 54, 0.9); 
     z-index: 1001;
     align-items: center;
     justify-content: center;
-  }
-  
-  .modal-content {
-    background-color: #2C2C3E; 
+}
+
+.modal-content {
+    background-color: #353A47; 
     margin: auto;
     padding: 20px;
     border-radius: 8px;
     width: 80%;
     max-width: 450px;
-    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
-  }
-  
-  .close-button {
-    color: #FFFFFF;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.close-button {
+    color: #D1D5DB; 
     float: right;
     font-size: 25px;
     font-weight: bold;
     line-height: 1;
     cursor: pointer;
     transition: color 0.3s;
-  }
-  
-  .close-button:hover,
-  .close-button:focus {
-    color: #FF6F61; 
-  }
-  
-  #popup-message {
-    color: #FFFFFF; 
+}
+
+.close-button:hover,
+.close-button:focus {
+    color: #EC6E4C; 
+}
+
+#popup-message {
+    color: #D1D5DB; 
     font-family: 'Roboto Mono', monospace;
     text-align: center;
-  }
+}
+
   
   
   
