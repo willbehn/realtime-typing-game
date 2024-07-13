@@ -43,7 +43,7 @@ public class RoomService {
         Room room = getRoom(roomId);
 
         room.setDone();
-        room.addClientEndTime(sessionId, room.getDurationInSeconds());
+        room.addClientEndTime(sessionId, getWordsPerMinute(47, room.getDurationInSeconds())); //TODO få antall ord fra text objekt
         return new StateDto(room.getState(), room.getClientEndtimes(), room.getDone());
     }
 
@@ -77,6 +77,17 @@ public class RoomService {
 
     private String generateRoomId() {
         return UUID.randomUUID().toString();
+    }
+
+    public long getWordsPerMinute(int wordCount, long timeInSeconds) {
+        if (timeInSeconds == 0) {
+            throw new IllegalArgumentException("Time cannot be zero.");
+        }
+        
+        double timeInMinutes = timeInSeconds / 60.0;
+        int wordsPerMinute = (int) (wordCount / timeInMinutes);
+        
+        return wordsPerMinute;
     }
 }
 

@@ -8,7 +8,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public class Room {
     private final String id;
     private final Map<String, Integer> clientPositions = new ConcurrentHashMap<>();
-    final Map<String, Long> endTime = new ConcurrentHashMap<>();
+    final Map<String, Long> endTime = new ConcurrentHashMap<>(); //TODO refactor to wordsPerMinute?
     private final String text;
     private Instant startTime;
     private boolean gameStarted;

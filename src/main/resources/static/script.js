@@ -183,7 +183,7 @@ function updatePositions(positions) {
         let charClass = '';
         for (const sessionIdTest in positions) {
             if (positions[sessionIdTest] === (fixedText.length)){
-                stompClient.send(`/app/room/${currentRoomId}/player/${sessionId}/done`, {}, {});
+                stompClient.send(`/app/room/${currentRoomId}/player/${sessionIdTest}/done`, {}, {});
                 return;
             }
 
@@ -208,7 +208,7 @@ function handleGameStatus(status) {
     if (status.done) {
         document.getElementById("message-input").disabled = true;
         const endTimeKeys = Object.keys(status.endTime);
-        showPopup("Player with id: " + endTimeKeys + " won!");
+        showPopup("Player with id: " + endTimeKeys + " won with " + status.endTime[endTimeKeys[0]] + " words per minute!");
         setTimeout(function() {
             leaveRoom();
         }, 10000);
