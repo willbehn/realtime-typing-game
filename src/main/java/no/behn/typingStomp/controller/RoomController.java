@@ -1,4 +1,4 @@
-package no.behn.typingStomp;
+package no.behn.typingStomp.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -8,6 +8,10 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import no.behn.typingStomp.exception.RoomNotFoundException;
+import no.behn.typingStomp.model.Room;
+import no.behn.typingStomp.model.Text;
+import no.behn.typingStomp.service.RoomService;
+import no.behn.typingStomp.service.TextService;
 
 @RestController
 @RequestMapping("/api/rooms")

@@ -1,4 +1,4 @@
-package no.behn.typingStomp;
+package no.behn.typingStomp.model;
 
 import java.time.Duration;
 import java.time.Instant;

@@ -2,6 +2,10 @@ package no.behn.typingStomp;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+
+import no.behn.typingStomp.model.Room;
+import no.behn.typingStomp.model.Text;
+
 import java.time.Duration;
 import java.time.Instant;
 import java.util.Map;

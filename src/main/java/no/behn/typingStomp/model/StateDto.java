@@ -1,4 +1,4 @@
-package no.behn.typingStomp;
+package no.behn.typingStomp.model;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;

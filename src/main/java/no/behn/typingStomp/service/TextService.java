@@ -1,6 +1,9 @@
-package no.behn.typingStomp;
+package no.behn.typingStomp.service;
 
 import org.springframework.stereotype.Service;
+
+import no.behn.typingStomp.model.Text;
+
 import java.util.Random;
 
 @Service

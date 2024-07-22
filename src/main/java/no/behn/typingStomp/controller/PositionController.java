@@ -1,4 +1,4 @@
-package no.behn.typingStomp;
+package no.behn.typingStomp.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
@@ -6,6 +6,9 @@ import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
 import org.springframework.stereotype.Controller;
+
+import no.behn.typingStomp.model.Room;
+import no.behn.typingStomp.service.RoomService;
 
 import java.util.Map;
 

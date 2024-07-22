@@ -1,8 +1,11 @@
-package no.behn.typingStomp;
+package no.behn.typingStomp.service;
 
 import org.springframework.stereotype.Service;
 
 import no.behn.typingStomp.exception.RoomNotFoundException;
+import no.behn.typingStomp.model.Room;
+import no.behn.typingStomp.model.StateDto;
+import no.behn.typingStomp.model.Text;
 
 import java.util.Map;
 import java.util.UUID;

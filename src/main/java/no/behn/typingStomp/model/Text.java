@@ -1,4 +1,4 @@
-package no.behn.typingStomp;
+package no.behn.typingStomp.model;
 
 public class Text {
     String text;

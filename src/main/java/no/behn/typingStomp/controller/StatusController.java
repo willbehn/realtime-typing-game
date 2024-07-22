@@ -1,4 +1,4 @@
-package no.behn.typingStomp;
+package no.behn.typingStomp.controller;
 
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -9,6 +9,8 @@ import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.stereotype.Controller;
 
 import no.behn.typingStomp.exception.RoomNotFoundException;
+import no.behn.typingStomp.model.StateDto;
+import no.behn.typingStomp.service.RoomService;
 
 @Controller
 public class StatusController {
