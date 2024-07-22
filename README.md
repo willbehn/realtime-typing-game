@@ -16,7 +16,7 @@ TypeSprint is a real-time multiplayer typing game where players compete to type 
 
 ## Demo
 
-Check out the live demo: [TypeSprint Demo](http://your-demo-link.com) (hosted on Render.com)  
+Check out the live demo: [TypeSprint Demo](https://typestomp.onrender.com) (hosted on Render.com)  
 <sub>Note: The demo might take up to a minute to load due to hosting conditions.</sub>
 
 ## Features
@@ -25,9 +25,6 @@ Check out the live demo: [TypeSprint Demo](http://your-demo-link.com) (hosted on
 - **Room Creation**: Rooms are created through REST endpoints, and each room is assigned a unique ID. The uniqe room ID is used for all communication within that room, like leaving/joining a room, position handling etc.
 
 - **Real-time Position Tracking**: Players positions in the text are tracked in real-time using the STOMP protocol over WebSockets, allowing all players to see each other's progress.
-
-
-
 
 
 ## Technologies Used
@@ -72,5 +69,5 @@ Once the application is running, you can access it at `http://localhost:8080` in
 
 ### Accessing the Demo
 
-Visit the [live demo](http://your-demo-link.com)  
+Visit the [live demo](https://typestomp.onrender.com)  
 <sub>Note: The demo might take up to a minute to load due to hosting conditions.</sub>
