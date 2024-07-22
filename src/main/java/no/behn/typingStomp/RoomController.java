@@ -24,7 +24,7 @@ public class RoomController {
 
     @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public Room createRoom() {
-        String text = textService.getText();
+        Text text = textService.getText();
         return roomService.createRoom(text);
         
     }
@@ -67,7 +67,7 @@ public class RoomController {
     
 
     @GetMapping("/{roomId}/text")
-    public String getRoomText(@PathVariable String roomId) {
+    public Text getRoomText(@PathVariable String roomId) {
         try {
             return roomService.getRoomText(roomId);
 

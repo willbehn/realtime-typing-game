@@ -26,7 +26,7 @@ public class PositionController {
         String sessionId = headerAccessor.getFirstNativeHeader("sessionId");
         Room room = roomService.getRoom(roomId);
         Map<String, Integer> roomClientPositions = room.getClientPositions();
-        String text = room.getText();
+        String text = room.getText().getTextString();
 
         int position = roomClientPositions.get(sessionId);
         System.out.println("sessionID: " + sessionId + ", position: " + position);

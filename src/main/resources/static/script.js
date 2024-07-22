@@ -147,10 +147,10 @@ function sendMessage() {
 
 function fetchInitialData() {
     fetch("/api/rooms/" + currentRoomId + "/text",{method: 'GET'})
-        .then(response => response.text())
+        .then(response => response.json())
         .then(data => {
             console.log('Received fixed text:', data);
-            displayFixedText(data);
+            displayFixedText(data.textString);
         })
         .catch(error => {
             console.error('Failed to fetch fixed text:', error);

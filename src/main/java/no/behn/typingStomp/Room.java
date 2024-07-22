@@ -9,12 +9,12 @@ public class Room {
     private final String id;
     private final Map<String, Integer> clientPositions = new ConcurrentHashMap<>();
     final Map<String, Long> endTime = new ConcurrentHashMap<>(); //TODO refactor to wordsPerMinute?
-    private final String text;
+    private final Text text;
     private Instant startTime;
     private boolean gameStarted;
     private boolean isDone;
 
-    public Room(String id, String text) {
+    public Room(String id, Text text) {
         this.id = id;
         this.text = text;
         this.gameStarted = false; //State represents if the game is ongoing or not, true if started, else if not
@@ -26,7 +26,7 @@ public class Room {
         return id;
     }
 
-    public String getText() {
+    public Text getText() {
         return text;
     }
 

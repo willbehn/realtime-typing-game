@@ -13,7 +13,7 @@ public class RoomService {
 
     private Map<String, Room> rooms = new ConcurrentHashMap<>();
 
-    public Room createRoom(String text) {
+    public Room createRoom(Text text) {
         String roomId = generateRoomId();
         Room room = new Room(roomId, text);
         rooms.put(roomId, room);
@@ -43,7 +43,7 @@ public class RoomService {
         Room room = getRoom(roomId);
 
         room.setDone();
-        room.addClientEndTime(sessionId, getWordsPerMinute(47, room.getDurationInSeconds())); //TODO få antall ord fra text objekt
+        room.addClientEndTime(sessionId, getWordsPerMinute(room.getText().getWordCount(), room.getDurationInSeconds())); //TODO få antall ord fra text objekt
         return new StateDto(room.getState(), room.getClientEndtimes(), room.getDone());
     }
 
@@ -71,7 +71,7 @@ public class RoomService {
         return Integer.toString(getRoom(roomId).getClientCount());
     }
 
-    public String getRoomText(String roomId){
+    public Text getRoomText(String roomId){
         return getRoom(roomId).getText();
     }
 
