@@ -95,8 +95,7 @@ function leaveRoom() {
                 stopGameTimer();
                 document.getElementById("start-screen").style.display = "flex";
                 document.getElementById("game-screen").style.display = "none";
-                currentRoomId = null;
-                gameStarted = false;
+                resetClient();
                 return response.text();
             }
         })
@@ -261,6 +260,17 @@ function startGameTimer() {
 
 function stopGameTimer() {
     clearInterval(timerInterval); 
+}
+
+function resetClient(){
+    stompClient = null;
+    currentRoomId = null;
+    sessionId = null;
+    gameStarted = false;
+   
+    const startButton = document.getElementById('start-game-button');
+    startButton.textContent = 'Start game';
+    startButton.disabled = false;
 }
 
 
