@@ -54,12 +54,13 @@ function joinRoom() {
                 showAlert("Room not available ", 3000);
                 return null;
             } else {
-                return response.text();
+                return response.json();
             }
         })
         .then(data => {
             if (data) {
-                sessionId = data;
+                sessionId = data.id;
+                console.log("sessionId recieved: " + data.id);
                 currentRoomId = roomId;
                 document.getElementById("current-room-id").textContent = "Room ID: " + roomId;
                 connectToRoom(roomId);
@@ -81,12 +82,12 @@ function joinCreatedRoom(roomId) {
             showAlert("Please enter a valid room ID", 3000);
             return null;
         } else {
-            return response.text();
+            return response.json();
         }
     })
     .then(data => {
         if (data) {
-            sessionId = data;
+            sessionId = data.id;
             connectToRoom(roomId);
         }
     })

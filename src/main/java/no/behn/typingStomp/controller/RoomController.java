@@ -13,6 +13,8 @@ import no.behn.typingStomp.model.Text;
 import no.behn.typingStomp.service.RoomService;
 import no.behn.typingStomp.service.TextService;
 
+import java.util.Map;
+
 @RestController
 @RequestMapping("/api/rooms")
 public class RoomController {
@@ -49,7 +51,7 @@ public class RoomController {
         try{
             //TODO add exception for room in progress not joinable
             String sessionId = roomService.addClientToRoom(roomId);
-            return ResponseEntity.ok(sessionId);
+            return ResponseEntity.ok("{\"id\":\"" + sessionId + "\"}");
             
         } catch (RoomNotFoundException exc){
             throw new ResponseStatusException(
