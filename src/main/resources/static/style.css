@@ -2,8 +2,8 @@
 
 body {
     font-family: 'Roboto Mono', monospace;
-    background-color: #292F36; 
-    color: #D1D5DB; 
+    background-color: #1E232A;
+    color: #D0D7DE;
     margin: 0;
     padding: 0;
     display: flex;
@@ -15,7 +15,7 @@ body {
 
 pre#ascii-art {
     font-family: 'Roboto Mono', monospace;
-    color: #FF6F61; 
+    color: #6B9AC4;
     font-size: 1.5rem;
     white-space: pre;
     margin: 0;
@@ -27,8 +27,8 @@ button {
     margin: 10px;
     border: none;
     border-radius: 5px;
-    background-color: #14B8A6; 
-    color: #FFFFFF; 
+    background-color: #2D9B5F;
+    color: #FFFFFF;
     cursor: pointer;
     font-size: 16px;
     font-family: 'Roboto Mono', monospace;
@@ -36,38 +36,38 @@ button {
 }
 
 button:hover {
-    background-color: #2AD2C9; 
+    background-color: #3AB773;
     transform: scale(1.05);
 }
 
 #copy-room-id-button,
 #create-room-button {
-    background-color: #EC6E4C; 
+    background-color: #2D9B5F;
 }
 
 #copy-room-id-button:hover,
 #create-room-button:hover {
-    background-color: #F48B79; 
+    background-color: #3AB773;
     transform: scale(1.05);
 }
 
 #join-room-button,
 #start-game-button {
-    background-color: #14B8A6; 
+    background-color: #7B56D1;
 }
 
 #join-room-button:hover,
 #start-game-button:hover {
-    background-color: #2AD2C9; 
+    background-color: #8C6FD8;
     transform: scale(1.05);
 }
 
 #leave-room-button {
-    background-color: #EC6E4C; 
+    background-color: #E74C3C;
 }
 
 #leave-room-button:hover {
-    background-color: #F48B79; 
+    background-color: #EC6F6F;
     transform: scale(1.05);
 }
 
@@ -76,15 +76,15 @@ input[type="text"] {
     margin: 5px;
     border-radius: 5px;
     font-size: 16px;
-    background-color: #1E252B; 
-    color: #D1D5DB; 
+    background-color: #1F2630;
+    color: #D0D7DE;
     font-family: 'Roboto Mono', monospace;
-    border: none; 
-    outline: none; 
+    border: none;
+    outline: none;
 }
 
 input[type="text"]:focus {
-    box-shadow: 0 0 3px #2AD2C9; 
+    box-shadow: 0 0 3px #6B9AC4;
 }
 
 #player-name,
@@ -106,8 +106,6 @@ input[type="text"]:focus {
     flex-grow: 1;
     margin: 5px;
 }
-
-
 
 #start-screen,
 #game-screen {
@@ -156,7 +154,7 @@ input[type="text"]:focus {
     font-size: 18px;
     border-radius: 8px;
     overflow-wrap: break-word;
-    background-color: #3d4751;
+    background-color: #1F2630;
 }
 
 #message-input {
@@ -165,11 +163,11 @@ input[type="text"]:focus {
 }
 
 .highlight-client-self {
-    background-color: #80cb83; 
+    background-color: #4ABF6C;
 }
 
 .highlight-client-opponent {
-    background-color: #ff8282; 
+    background-color: #F28C8C;
 }
 
 #alert-container {
@@ -177,7 +175,7 @@ input[type="text"]:focus {
     top: 20px;
     right: 20px;
     padding: 10px 20px;
-    background-color: #5C6BC0; 
+    background-color: #6B9AC4;
     color: white;
     border-radius: 5px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
@@ -194,7 +192,6 @@ input[type="text"]:focus {
     display: none;
 }
 
-
 .modal {
     display: none;
     position: fixed;
@@ -202,14 +199,14 @@ input[type="text"]:focus {
     top: 0;
     width: 100%;
     height: 100%;
-    background: rgba(41, 47, 54, 0.9); 
+    background: rgba(30, 35, 42, 0.9);
     z-index: 1001;
     align-items: center;
     justify-content: center;
 }
 
 .modal-content {
-    background-color: #353A47; 
+    background-color: #1F2630;
     margin: auto;
     padding: 20px;
     border-radius: 8px;
@@ -219,7 +216,7 @@ input[type="text"]:focus {
 }
 
 .close-button {
-    color: #D1D5DB; 
+    color: #D0D7DE;
     float: right;
     font-size: 25px;
     font-weight: bold;
@@ -230,18 +227,51 @@ input[type="text"]:focus {
 
 .close-button:hover,
 .close-button:focus {
-    color: #EC6E4C; 
+    color: #6B9AC4;
 }
 
 #popup-message {
-    color: #D1D5DB; 
+    color: #D0D7DE;
     font-family: 'Roboto Mono', monospace;
     text-align: center;
 }
 
-  
-  
-  
-  
+#about {
+    margin-top: 20px;
+    padding: 10px;
+    background-color: #1F2630;
+    border-radius: 8px;
+    text-align: center;
+}
+
+#about p {
+    margin: 0;
+    font-size: 16px;
+    color: #D0D7DE;
+}
+
+#github-link {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    color: #6B9AC4;
+    margin-top: 10px;
+}
+
+#github-link:hover {
+    color: #3D79C1;
+}
+
+#github-logo {
+    width: 32px;
+    height: 32px;
+    margin-right: 8px;
+}
+
+#github-link span {
+    font-size: 16px;
+    font-family: 'Roboto Mono', monospace;
+}
 
 

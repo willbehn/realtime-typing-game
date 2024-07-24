@@ -1,5 +1,4 @@
 import { showPopup,showAlert, displayFixedText, displayPlayerCount } from './ui.js';
-import { copyToClipboard, enableTyping } from './utils.js';
 
 let stompClient = null;
 let currentRoomId = null;
@@ -280,6 +279,22 @@ function setupPopupModal() {
             modal.style.display = "none";
         }
     };
+}
+
+function copyToClipboard() {
+    const roomIdWithText = document.getElementById("current-room-id").innerText.split(" ");
+    const roomId = roomIdWithText[roomIdWithText.length - 1];
+
+    navigator.clipboard.writeText(roomId).then(() => {
+        showAlert("Room ID copied!", 3000);
+    }).catch(error => {
+        console.error('Failed to copy text: ', error);
+    });
+}
+
+function enableTyping() {
+    const messageInput = document.getElementById("message-input");
+    messageInput.focus();
 }
   
  
