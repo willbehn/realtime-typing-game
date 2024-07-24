@@ -1,4 +1,5 @@
-import { showAlert } from './ui.js';
+import { showPopup,showAlert, displayFixedText, displayPlayerCount } from './ui.js';
+import { copyToClipboard, enableTyping } from './utils.js';
 
 let stompClient = null;
 let currentRoomId = null;
@@ -176,15 +177,7 @@ function fetchInitialData() {
     timer.textContent = "0:00";
 }
 
-function displayFixedText(text) {
-    const fixedTextContainer = document.getElementById("fixedTextContainer");
-    fixedTextContainer.textContent = text;
-}
 
-function displayPlayerCount(playerCount) {
-    const playerCountContainer = document.getElementById("player-count");
-    playerCountContainer.textContent = playerCount;
-}
 
 function updatePositions(positions) {
     const fixedTextContainer = document.getElementById("fixedTextContainer");
@@ -242,21 +235,6 @@ function startGame() {
     stompClient.send(`/app/room/${currentRoomId}/start`, {}, {});
 }
 
-function enableTyping() {
-    const messageInput = document.getElementById("message-input");
-    messageInput.focus();
-}
-
-function copyToClipboard() {
-    const roomIdWithText = document.getElementById("current-room-id").innerText.split(" ");
-    const roomId = roomIdWithText[roomIdWithText.length - 1];
-
-    navigator.clipboard.writeText(roomId).then(() => {
-        showAlert("Room ID copied!", 3000);
-    }).catch(error => {
-        console.error('Failed to copy text: ', error);
-    });
-}
 
 function startGameTimer() {
     let gameTime = 0;
@@ -305,10 +283,5 @@ function setupPopupModal() {
 }
   
  
-  function showPopup(message) {
-    var modal = document.getElementById("popup-modal");
-    var messageParagraph = document.getElementById("popup-message");
-    messageParagraph.innerText = message;
-    modal.style.display = "block";
-  }
+
   
