@@ -1,8 +1,23 @@
+import { showAlert } from './ui.js';
+
 let stompClient = null;
 let currentRoomId = null;
 let sessionId = null;
 let gameStarted = false;
 let timerInterval;
+
+
+document.addEventListener("DOMContentLoaded", () => {
+    document.getElementById("create-room-button").addEventListener("click", createRoom);
+    document.getElementById("join-room-button").addEventListener("click", joinRoom);
+    document.getElementById("copy-room-id-button").addEventListener("click", copyToClipboard);
+    document.getElementById("leave-room-button").addEventListener("click", leaveRoom);
+    document.getElementById("start-game-button").addEventListener("click", startGame);
+    document.getElementById("fixedTextContainer").addEventListener("click", enableTyping);
+    document.getElementById("message-input").addEventListener("input", sendMessage);
+
+    setupPopupModal();
+});
 
 function createRoom() {
     fetch('/api/rooms', {
@@ -274,32 +289,20 @@ function resetClient(){
 }
 
 
-function showAlert(message, duration = 3000) {
-    const alertContainer = document.getElementById("alert-container");
-    alertContainer.textContent = message;
-    alertContainer.classList.remove("hidden");
-    alertContainer.classList.add("show");
+function setupPopupModal() {
+    const modal = document.getElementById("popup-modal");
+    const closeButton = document.getElementsByClassName("close-button")[0];
 
-    setTimeout(() => {
-        alertContainer.classList.remove("show");
-        alertContainer.classList.add("hidden");
-    }, duration);
-}
-
-document.addEventListener("DOMContentLoaded", function(){
-    var modal = document.getElementById("popup-modal");
-    var closeButton = document.getElementsByClassName("close-button")[0];
-  
-    closeButton.onclick = function() {
-      modal.style.display = "none";
-    }
-  
-    window.onclick = function(event) {
-      if (event.target === modal) {
+    closeButton.onclick = () => {
         modal.style.display = "none";
-      }
-    }
-  });
+    };
+
+    window.onclick = (event) => {
+        if (event.target === modal) {
+            modal.style.display = "none";
+        }
+    };
+}
   
  
   function showPopup(message) {
