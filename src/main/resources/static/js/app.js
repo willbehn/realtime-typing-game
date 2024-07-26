@@ -5,6 +5,7 @@ let stompClient = null;
 let currentRoomId = null;
 let sessionId = null;
 let timerInterval;
+let gameStarted = false;
 
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -184,9 +185,10 @@ function fetchInitialData() {
 
 
 
-function updatePositions(positions) {
+function updatePositions(positionDto) {
     const fixedTextContainer = document.getElementById("fixedTextContainer");
     const fixedText = fixedTextContainer.textContent;
+    const positions = positionDto.positions;
 
     let htmlContent = '';
     for (let i = 0; i < fixedText.length; i++) {

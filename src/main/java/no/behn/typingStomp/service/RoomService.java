@@ -4,9 +4,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
+import no.behn.typingStomp.dto.StateResponseDto;
 import no.behn.typingStomp.exception.RoomNotFoundException;
 import no.behn.typingStomp.model.Room;
-import no.behn.typingStomp.model.StateDto;
 import no.behn.typingStomp.model.Text;
 
 import java.util.Map;
@@ -36,21 +36,21 @@ public class RoomService {
         } else throw new RoomNotFoundException("Room with id: " + roomId + " not found");
     }
 
-    public StateDto startGameInRoom(String roomId) {
+    public StateResponseDto startGameInRoom(String roomId) {
         Room room = getRoom(roomId);
 
         room.setStarted();
         log.info(room.getStartTime() + ": Started room with id: " + roomId);
-        return new StateDto(room.getState(), room.getClientEndtimes(), room.getDone());
+        return new StateResponseDto(room.getState(), room.getClientEndtimes(), room.getDone());
         
     }
 
-    public StateDto markPlayerAsDone(String roomId, String sessionId) {
+    public StateResponseDto markPlayerAsDone(String roomId, String sessionId) {
         Room room = getRoom(roomId);
 
         room.setDone();
         room.addClientEndTime(sessionId, getWordsPerMinute(room.getText().getWordCount(), room.getDurationInSeconds())); //TODO få antall ord fra text objekt
-        return new StateDto(room.getState(), room.getClientEndtimes(), room.getDone());
+        return new StateResponseDto(room.getState(), room.getClientEndtimes(), room.getDone());
     }
 
     public String addClientToRoom(String roomId) {

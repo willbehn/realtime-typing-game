@@ -3,6 +3,8 @@ package no.behn.typingStomp.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
+
+import no.behn.typingStomp.dto.PositionDto;
 import no.behn.typingStomp.model.Room;
 
 import java.util.Map;
@@ -17,7 +19,7 @@ public class PositionService {
         this.roomService = roomService;
     }
 
-    public Map<String, Integer> handlePosition(String roomId, String message, StompHeaderAccessor headerAccessor) {
+    public PositionDto handlePosition(String roomId, String message, StompHeaderAccessor headerAccessor) {
         String sessionId = headerAccessor.getFirstNativeHeader("sessionId");
         Room room = roomService.getRoom(roomId);
         Map<String, Integer> roomClientPositions = room.getClientPositions();
@@ -29,7 +31,8 @@ public class PositionService {
             position++;
             roomClientPositions.put(sessionId, position);
         }
-        return roomClientPositions;
+
+        return new PositionDto(roomClientPositions, "Position updated successfully.");
     }
 }
 

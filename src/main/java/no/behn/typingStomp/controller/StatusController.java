@@ -8,8 +8,8 @@ import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.stereotype.Controller;
 
+import no.behn.typingStomp.dto.StateResponseDto;
 import no.behn.typingStomp.exception.RoomNotFoundException;
-import no.behn.typingStomp.model.StateDto;
 import no.behn.typingStomp.service.RoomService;
 
 @Controller
@@ -24,24 +24,24 @@ public class StatusController {
 
     @MessageMapping("/room/{roomId}/start")
     @SendTo("/topic/room/{roomId}/status")
-    public StateDto startSession(@DestinationVariable String roomId) {
+    public StateResponseDto startSession(@DestinationVariable String roomId) {
         System.out.println("Starting game in room: " + roomId);
         
         try {
             return roomService.startGameInRoom(roomId);
 
         } catch (RoomNotFoundException exc) {
-            return new StateDto(false, new ConcurrentHashMap<>(), false);
+            return new StateResponseDto(false, new ConcurrentHashMap<>(), false);
         }
     }
 
     @MessageMapping("/room/{roomId}/player/{sessionId}/done")
     @SendTo("/topic/room/{roomId}/status")
-    public StateDto playerDone(@DestinationVariable String roomId, @DestinationVariable String sessionId) {
+    public StateResponseDto playerDone(@DestinationVariable String roomId, @DestinationVariable String sessionId) {
         try {
             return roomService.markPlayerAsDone(roomId, sessionId);
         } catch (RoomNotFoundException e) {
-            return new StateDto(false, new ConcurrentHashMap<>(), false);
+            return new StateResponseDto(false, new ConcurrentHashMap<>(), false);
         }
     }
 

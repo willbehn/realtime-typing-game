@@ -7,6 +7,7 @@ import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
 import org.springframework.stereotype.Controller;
 
+import no.behn.typingStomp.dto.PositionDto;
 import no.behn.typingStomp.service.PositionService;
 
 import java.util.Map;
@@ -22,7 +23,7 @@ public class PositionController {
 
     @MessageMapping("/room/{roomId}")
     @SendTo("/topic/room/{roomId}/positions")
-    public Map<String, Integer> handlePosition(@DestinationVariable String roomId, String message, StompHeaderAccessor headerAccessor) {
+    public PositionDto handlePosition(@DestinationVariable String roomId, String message, StompHeaderAccessor headerAccessor) {
         return positionService.handlePosition(roomId, message, headerAccessor);
     }
 }

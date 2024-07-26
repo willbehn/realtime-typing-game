@@ -1,14 +1,14 @@
-package no.behn.typingStomp.model;
+package no.behn.typingStomp.dto;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-public class StateDto {
+public class StateResponseDto {
     private boolean gameStarted;
     private boolean isDone;
     private Map<String, Long> endTime = new ConcurrentHashMap<>();
 
-    public StateDto(boolean gameStarted, Map<String, Long> endTime, boolean isDone) {
+    public StateResponseDto(boolean gameStarted, Map<String, Long> endTime, boolean isDone) {
         this.gameStarted = gameStarted;
         this.endTime = endTime;
         this.isDone = isDone;
