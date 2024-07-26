@@ -36,12 +36,18 @@ public class RoomService {
         } else throw new RoomNotFoundException("Room with id: " + roomId + " not found");
     }
 
+    public StateResponseDto getRoomStatus(String roomId){
+        Room room = getRoom(roomId);
+        return new StateResponseDto(room.getState(), room.getClientEndtimes(), room.getDone(), room.getPlayerNames());
+        
+    }
+
     public StateResponseDto startGameInRoom(String roomId) {
         Room room = getRoom(roomId);
 
         room.setStarted();
         log.info(room.getStartTime() + ": Started room with id: " + roomId);
-        return new StateResponseDto(room.getState(), room.getClientEndtimes(), room.getDone());
+        return new StateResponseDto(room.getState(), room.getClientEndtimes(), room.getDone(), room.getPlayerNames());
         
     }
 
@@ -50,15 +56,15 @@ public class RoomService {
 
         room.setDone();
         room.addClientEndTime(sessionId, getWordsPerMinute(room.getText().getWordCount(), room.getDurationInSeconds())); //TODO få antall ord fra text objekt
-        return new StateResponseDto(room.getState(), room.getClientEndtimes(), room.getDone());
+        return new StateResponseDto(room.getState(), room.getClientEndtimes(), room.getDone(), room.getPlayerNames());
     }
 
-    public String addClientToRoom(String roomId) {
+    public String addClientToRoom(String roomId, String playerName) {
         Room room = getRoom(roomId);
         
         String sessionId = UUID.randomUUID().toString();
         log.info("Adding client with sessionId: " + sessionId + " to roomId: " + roomId);
-        room.addClient(sessionId);
+        room.addClient(sessionId, playerName);
         return sessionId;
     }
 

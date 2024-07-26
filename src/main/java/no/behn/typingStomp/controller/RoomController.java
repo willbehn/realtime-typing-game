@@ -7,13 +7,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
+import no.behn.typingStomp.dto.JoinRoomRequest;
 import no.behn.typingStomp.exception.RoomNotFoundException;
 import no.behn.typingStomp.model.Room;
 import no.behn.typingStomp.model.Text;
 import no.behn.typingStomp.service.RoomService;
 import no.behn.typingStomp.service.TextService;
-
-import java.util.Map;
 
 @RestController
 @RequestMapping("/api/rooms")
@@ -47,17 +46,18 @@ public class RoomController {
     }
 
     @PostMapping("/{roomId}/join")
-    public ResponseEntity<String> joinRoom(@PathVariable String roomId) {
-        try{
-            //TODO add exception for room in progress not joinable
-            String sessionId = roomService.addClientToRoom(roomId);
-            return ResponseEntity.ok("{\"id\":\"" + sessionId + "\"}");
+    public ResponseEntity<String> joinRoom(@PathVariable String roomId, @RequestBody JoinRoomRequest joinRoomRequest) {
+        try {
+            String playerName = joinRoomRequest.getPlayerName();
             
-        } catch (RoomNotFoundException exc){
-            throw new ResponseStatusException(
-              HttpStatus.NOT_FOUND, "Room not found", exc);
-       }
-    }
+            // TODO: Add exception for room in progress not joinable
+            String sessionId = roomService.addClientToRoom(roomId, playerName);
+            return ResponseEntity.ok("{\"id\":\"" + sessionId + "\"}");
+        
+        } catch (RoomNotFoundException exc) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Room not found", exc);
+        }
+}
 
     @PostMapping("/{roomId}/leave")
     public ResponseEntity<String> leaveRoom(@PathVariable String roomId, @RequestParam String sessionId) {

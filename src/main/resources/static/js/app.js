@@ -48,12 +48,19 @@ function createRoom() {
 
 function joinRoom() {
     const roomId = document.getElementById("join-room-id").value.trim();
+    const playerName = document.getElementById("player-name").value;
     console.log("Trying to join room with id: " + roomId);
     if (roomId.length > 0) {
-        fetch("/api/rooms/" + roomId +"/join",{method: 'POST'})
+        fetch("/api/rooms/" + roomId + "/join", {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ playerName: playerName })
+        })
         .then(response => {
             if (!response.ok) {
-                showAlert("Room not available ", 3000);
+                showAlert("Room not available", 3000);
                 return null;
             } else {
                 return response.json();
@@ -62,7 +69,7 @@ function joinRoom() {
         .then(data => {
             if (data) {
                 sessionId = data.id;
-                console.log("sessionId recieved: " + data.id);
+                console.log("sessionId received: " + data.id);
                 currentRoomId = roomId;
                 document.getElementById("current-room-id").textContent = "Room ID: " + roomId;
                 connectToRoom(roomId);
@@ -78,7 +85,14 @@ function joinRoom() {
 }
 
 function joinCreatedRoom(roomId) {
-    fetch("/api/rooms/" + roomId +"/join",{method: 'POST'})
+    const playerName = document.getElementById("player-name").value;
+    fetch("/api/rooms/" + roomId + "/join", {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ playerName: playerName })
+    })
     .then(response => {
         if (!response.ok) {
             showAlert("Please enter a valid room ID", 3000);
@@ -98,6 +112,7 @@ function joinCreatedRoom(roomId) {
         showAlert("Failed to join room. Please try again later.", 3000);
     });
 }
+
 
 
 function leaveRoom() {
@@ -149,8 +164,13 @@ function connectToRoom(roomId) {
 
         stompClient.subscribe('/topic/room/' + roomId + '/status', function(message) {
             const status = JSON.parse(message.body); 
+            const playerNamesMap = status.playerNames;
+            updatePlayerList(playerNamesMap);
+
             handleGameStatus(status); 
         });
+        //TODO add to its own function when refactoring playercount
+        stompClient.send("/app/room/" + currentRoomId + "/status", {}, "");
     });
 }
 
@@ -308,6 +328,17 @@ function copyToClipboard() {
 function enableTyping() {
     const messageInput = document.getElementById("message-input");
     messageInput.focus();
+}
+
+function updatePlayerList(playerNamesMap) {
+    const playerListContainer = document.getElementById("player-list");
+    playerListContainer.innerHTML = '';
+
+    Object.values(playerNamesMap).forEach(name => {
+        const listItem = document.createElement("li");
+        listItem.textContent = name;
+        playerListContainer.appendChild(listItem);
+    });
 }
   
  

@@ -31,7 +31,20 @@ public class StatusController {
             return roomService.startGameInRoom(roomId);
 
         } catch (RoomNotFoundException exc) {
-            return new StateResponseDto(false, new ConcurrentHashMap<>(), false);
+            return new StateResponseDto(false, new ConcurrentHashMap<>(), false,new ConcurrentHashMap<>());
+        }
+    }
+
+    @MessageMapping("/room/{roomId}/status")
+    @SendTo("/topic/room/{roomId}/status")
+    public StateResponseDto getStatus(@DestinationVariable String roomId) {
+        System.out.println("Starting game in room: " + roomId);
+        
+        try {
+            return roomService.getRoomStatus(roomId);
+
+        } catch (RoomNotFoundException exc) {
+            return new StateResponseDto(false, new ConcurrentHashMap<>(), false,new ConcurrentHashMap<>());
         }
     }
 
@@ -41,7 +54,7 @@ public class StatusController {
         try {
             return roomService.markPlayerAsDone(roomId, sessionId);
         } catch (RoomNotFoundException e) {
-            return new StateResponseDto(false, new ConcurrentHashMap<>(), false);
+            return new StateResponseDto(false, new ConcurrentHashMap<>(), false,new ConcurrentHashMap<>());
         }
     }
 

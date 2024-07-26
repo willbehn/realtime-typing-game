@@ -7,11 +7,13 @@ public class StateResponseDto {
     private boolean gameStarted;
     private boolean isDone;
     private Map<String, Long> endTime = new ConcurrentHashMap<>();
+    private Map<String, String> playerNames = new ConcurrentHashMap<>();
 
-    public StateResponseDto(boolean gameStarted, Map<String, Long> endTime, boolean isDone) {
+    public StateResponseDto(boolean gameStarted, Map<String, Long> endTime, boolean isDone, Map<String,String> playerNames) {
         this.gameStarted = gameStarted;
         this.endTime = endTime;
         this.isDone = isDone;
+        this.playerNames = playerNames;
     }
 
     public boolean isGameStarted() {
@@ -32,6 +34,10 @@ public class StateResponseDto {
 
     public Map<String, Long> getEndTime() {
         return endTime;
+    }
+
+    public Map<String,String> getPlayerNames(){
+        return playerNames;
     }
 
     public void setEndTime(Map<String, Long> endTime) {

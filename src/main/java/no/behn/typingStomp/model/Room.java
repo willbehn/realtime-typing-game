@@ -9,6 +9,7 @@ public class Room {
     private final String id;
     private final Map<String, Integer> clientPositions = new ConcurrentHashMap<>();
     final Map<String, Long> endTime = new ConcurrentHashMap<>(); //TODO refactor to wordsPerMinute?
+    private final Map<String,String> playerNames = new ConcurrentHashMap<>();
     private final Text text;
     private Instant startTime;
     private boolean gameStarted;
@@ -30,8 +31,9 @@ public class Room {
         return text;
     }
 
-    public void addClient(String sessionId) {
+    public void addClient(String sessionId, String playerName) {
         clientPositions.put(sessionId, 0);
+        playerNames.put(sessionId, playerName);
     }
 
     public void addClientEndTime(String sessionId, Long timeInSeconds){
@@ -41,6 +43,7 @@ public class Room {
     public void removeClient(String sessionId) {
         if (clientPositions.containsKey(sessionId)){
             clientPositions.remove(sessionId);
+            playerNames.remove(sessionId);
         }
     }
 
@@ -55,6 +58,10 @@ public class Room {
 
     public boolean getState(){
         return gameStarted;
+    }
+
+    public Map<String,String> getPlayerNames(){
+        return playerNames;
     }
 
     public boolean getDone(){
