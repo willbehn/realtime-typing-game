@@ -62,6 +62,7 @@ button:hover {
     transform: scale(1.05);
 }
 
+
 #leave-room-button {
     background-color: #E74C3C; 
 }
@@ -124,7 +125,11 @@ input[type="text"]:focus {
     justify-content: center;
 }
 
+
 #status-container {
+    /*background-color: #2D3748; */
+    padding: 10px;
+    border-radius: 5px;
     margin-bottom: 10px;
 }
 
@@ -155,6 +160,12 @@ input[type="text"]:focus {
     border-radius: 8px;
     overflow-wrap: break-word;
     background-color: #1F2630; 
+}
+
+#timer {
+    font-size: 2rem; 
+    font-weight: bold;
+    margin-right: 10px;
 }
 
 #message-input {

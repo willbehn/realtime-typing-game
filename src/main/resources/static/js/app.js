@@ -1,9 +1,9 @@
 import { showPopup,showAlert, displayFixedText, displayPlayerCount } from './ui.js';
+import { handleCountdown, resetCountdown, countdown } from './countdown.js';
 
 let stompClient = null;
 let currentRoomId = null;
 let sessionId = null;
-let gameStarted = false;
 let timerInterval;
 
 
@@ -15,6 +15,7 @@ document.addEventListener("DOMContentLoaded", () => {
     document.getElementById("start-game-button").addEventListener("click", startGame);
     document.getElementById("fixedTextContainer").addEventListener("click", enableTyping);
     document.getElementById("message-input").addEventListener("input", sendMessage);
+    document.getElementById("start-game-button").addEventListener("click", sendStartToRoom);
 
     setupPopupModal();
 });
@@ -160,6 +161,10 @@ function sendMessage() {
     }
 }
 
+function sendStartToRoom() {
+    stompClient.send(`/app/room/${currentRoomId}/start`, {}, {});
+}
+
 function fetchInitialData() {
     fetch("/api/rooms/" + currentRoomId + "/text",{method: 'GET'})
         .then(response => response.json())
@@ -209,6 +214,21 @@ function updatePositions(positions) {
     fixedTextContainer.innerHTML = htmlContent;
 }
 
+
+function startGame() {
+    if (countdown > 0) return;
+
+    resetCountdown();
+
+    document.getElementById("message-input").disabled = false;
+    startGameTimer();
+
+    const startButton = document.getElementById('start-game-button');
+    startButton.textContent = 'Game going!';
+    startButton.disabled = true;
+}
+
+
 function handleGameStatus(status) {
     console.log(status);
 
@@ -220,19 +240,11 @@ function handleGameStatus(status) {
             leaveRoom();
         }, 10000);
     } else if (status.gameStarted) {
-        showAlert("Game started!", 3000);
-        document.getElementById("message-input").disabled = false;
-        startGameTimer();
+        showAlert("Game starting in 5 seconds!", 3000);
+        document.getElementById("message-input").disabled = true;
 
-        const startButton = document.getElementById('start-game-button');
-        startButton.textContent = 'Game going!';
-        startButton.disabled = true;
-    } 
-}
-
-
-function startGame() {
-    stompClient.send(`/app/room/${currentRoomId}/start`, {}, {});
+        handleCountdown(startGame);
+    }
 }
 
 
