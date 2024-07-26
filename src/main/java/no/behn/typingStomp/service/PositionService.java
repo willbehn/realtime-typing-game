@@ -24,7 +24,6 @@ public class PositionService {
         String text = room.getText().getTextString();
 
         int position = roomClientPositions.get(sessionId);
-        System.out.println("sessionID: " + sessionId + ", position: " + position);
 
         if (position < text.length() && message.charAt(0) == text.charAt(position)) {
             position++;

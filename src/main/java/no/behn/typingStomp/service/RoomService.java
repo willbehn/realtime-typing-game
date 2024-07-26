@@ -1,5 +1,7 @@
 package no.behn.typingStomp.service;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import no.behn.typingStomp.exception.RoomNotFoundException;
@@ -15,13 +17,14 @@ import java.util.concurrent.ConcurrentHashMap;
 public class RoomService {
 
     private Map<String, Room> rooms = new ConcurrentHashMap<>();
+    private static final Logger log = LoggerFactory.getLogger(RoomService.class);
 
     public Room createRoom(Text text) {
         String roomId = generateRoomId();
         Room room = new Room(roomId, text);
         rooms.put(roomId, room);
 
-        System.out.println("Creating room with id: " + roomId);
+        log.info("Creating room with id: " + roomId);
         return room;
     }
 
@@ -37,7 +40,7 @@ public class RoomService {
         Room room = getRoom(roomId);
 
         room.setStarted();
-        System.out.println(room.getStartTime() + ": Started room with id: " + roomId);
+        log.info(room.getStartTime() + ": Started room with id: " + roomId);
         return new StateDto(room.getState(), room.getClientEndtimes(), room.getDone());
         
     }
@@ -54,14 +57,14 @@ public class RoomService {
         Room room = getRoom(roomId);
         
         String sessionId = UUID.randomUUID().toString();
-        System.out.println("Adding client with sessionId: " + sessionId + " to roomId: " + roomId);
+        log.info("Adding client with sessionId: " + sessionId + " to roomId: " + roomId);
         room.addClient(sessionId);
         return sessionId;
     }
 
     public void removeClientFromRoom(String roomId, String sessionId) {
         Room room = getRoom(roomId);
-        System.out.println("Removing client with sessionId: " + sessionId + " from roomId: " + roomId);
+        log.info("Removing client with sessionId: " + sessionId + " from roomId: " + roomId);
         room.removeClient(sessionId);
 
         // Removes the room if there are no players remaining

@@ -188,8 +188,6 @@ function updatePositions(positions) {
     const fixedTextContainer = document.getElementById("fixedTextContainer");
     const fixedText = fixedTextContainer.textContent;
 
-    console.log("Positions received: ", positions);
-
     let htmlContent = '';
     for (let i = 0; i < fixedText.length; i++) {
         let charClass = '';
