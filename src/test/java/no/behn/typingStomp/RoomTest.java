@@ -23,14 +23,14 @@ public class RoomTest {
     @Test
     public void testAddClient() {
         room.addClient("client1","Name1");
-        assertEquals(1, room.getClientCount());
+        assertEquals(1, room.getPlayerCount());
     }
 
     @Test
     public void testRemoveClient() {
         room.addClient("client1","Name1");
         room.removeClient("client1");
-        assertEquals(0, room.getClientCount());
+        assertEquals(0, room.getPlayerCount());
     }
 
     @Test

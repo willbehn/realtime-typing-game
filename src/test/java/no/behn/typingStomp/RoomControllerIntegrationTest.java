@@ -49,6 +49,7 @@ public class RoomControllerIntegrationTest {
     @Test
     public void testJoinRoomThatDontExist() throws Exception {
         ResultActions result = mockMvc.perform(post("/api/rooms/123/join")
+            .content("{\"playerName\": \"testPlayer\"}")
             .contentType(MediaType.APPLICATION_JSON))
             .andExpect(status().isNotFound());
     }
@@ -71,6 +72,7 @@ public class RoomControllerIntegrationTest {
         String roomId = jsonNode.get("id").asText();
     
         mockMvc.perform(post("/api/rooms/" + roomId + "/join")
+                .content("{\"playerName\": \"testPlayer\"}")
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());        
     }

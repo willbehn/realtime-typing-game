@@ -38,7 +38,6 @@ public class StatusController {
     @MessageMapping("/room/{roomId}/status")
     @SendTo("/topic/room/{roomId}/status")
     public StateResponseDto getStatus(@DestinationVariable String roomId) {
-        System.out.println("Starting game in room: " + roomId);
         
         try {
             return roomService.getRoomStatus(roomId);
