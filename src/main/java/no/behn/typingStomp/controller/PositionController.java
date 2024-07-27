@@ -10,7 +10,6 @@ import org.springframework.stereotype.Controller;
 import no.behn.typingStomp.dto.PositionDto;
 import no.behn.typingStomp.service.PositionService;
 
-import java.util.Map;
 
 @Controller
 public class PositionController {

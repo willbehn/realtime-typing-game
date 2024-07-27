@@ -6,14 +6,16 @@ import java.util.concurrent.ConcurrentHashMap;
 public class StateResponseDto {
     private boolean gameStarted;
     private boolean isDone;
+    private int playerCount;
     private Map<String, Long> endTime = new ConcurrentHashMap<>();
     private Map<String, String> playerNames = new ConcurrentHashMap<>();
 
-    public StateResponseDto(boolean gameStarted, Map<String, Long> endTime, boolean isDone, Map<String,String> playerNames) {
+    public StateResponseDto(boolean gameStarted, Map<String, Long> endTime, boolean isDone, Map<String,String> playerNames, int playerCount) {
         this.gameStarted = gameStarted;
         this.endTime = endTime;
         this.isDone = isDone;
         this.playerNames = playerNames;
+        this.playerCount = playerCount;
     }
 
     public boolean isGameStarted() {
@@ -38,6 +40,10 @@ public class StateResponseDto {
 
     public Map<String,String> getPlayerNames(){
         return playerNames;
+    }
+
+    public int getPlayerCount(){
+        return playerCount;
     }
 
     public void setEndTime(Map<String, Long> endTime) {

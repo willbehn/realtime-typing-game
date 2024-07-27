@@ -14,6 +14,7 @@ public class Room {
     private Instant startTime;
     private boolean gameStarted;
     private boolean isDone;
+    private int playerCount;
 
     public Room(String id, Text text) {
         this.id = id;
@@ -21,6 +22,7 @@ public class Room {
         this.gameStarted = false; //State represents if the game is ongoing or not, true if started, else if not
         this.isDone = false;
         this.startTime = null;
+        this.playerCount = 0;
     }
 
     public String getId() {
@@ -34,6 +36,7 @@ public class Room {
     public void addClient(String sessionId, String playerName) {
         clientPositions.put(sessionId, 0);
         playerNames.put(sessionId, playerName);
+        playerCount++;
     }
 
     public void addClientEndTime(String sessionId, Long timeInSeconds){
@@ -44,6 +47,7 @@ public class Room {
         if (clientPositions.containsKey(sessionId)){
             clientPositions.remove(sessionId);
             playerNames.remove(sessionId);
+            playerCount--;
         }
     }
 
@@ -76,8 +80,8 @@ public class Room {
         return endTime;
     }
 
-    public int getClientCount(){
-        return clientPositions.keySet().size();
+    public int getPlayerCount(){
+        return playerCount;
     }
 
     public String getStartTime(){

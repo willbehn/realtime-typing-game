@@ -38,7 +38,7 @@ public class RoomService {
 
     public StateResponseDto getRoomStatus(String roomId){
         Room room = getRoom(roomId);
-        return new StateResponseDto(room.getState(), room.getClientEndtimes(), room.getDone(), room.getPlayerNames());
+        return new StateResponseDto(room.getState(), room.getClientEndtimes(), room.getDone(), room.getPlayerNames(), room.getPlayerCount());
         
     }
 
@@ -47,7 +47,7 @@ public class RoomService {
 
         room.setStarted();
         log.info(room.getStartTime() + ": Started room with id: " + roomId);
-        return new StateResponseDto(room.getState(), room.getClientEndtimes(), room.getDone(), room.getPlayerNames());
+        return new StateResponseDto(room.getState(), room.getClientEndtimes(), room.getDone(), room.getPlayerNames(), room.getPlayerCount());
         
     }
 
@@ -56,7 +56,7 @@ public class RoomService {
 
         room.setDone();
         room.addClientEndTime(sessionId, getWordsPerMinute(room.getText().getWordCount(), room.getDurationInSeconds())); //TODO få antall ord fra text objekt
-        return new StateResponseDto(room.getState(), room.getClientEndtimes(), room.getDone(), room.getPlayerNames());
+        return new StateResponseDto(room.getState(), room.getClientEndtimes(), room.getDone(), room.getPlayerNames(), room.getPlayerCount());
     }
 
     public String addClientToRoom(String roomId, String playerName) {
@@ -74,13 +74,13 @@ public class RoomService {
         room.removeClient(sessionId);
 
         // Removes the room if there are no players remaining
-        if (room.getClientCount() == 0){
+        if (room.getPlayerCount() == 0){
             rooms.remove(roomId);
         }
     }
 
-    public String getClientCount(String roomId){
-        return Integer.toString(getRoom(roomId).getClientCount());
+    public String getPlayerCount(String roomId){
+        return Integer.toString(getRoom(roomId).getPlayerCount());
     }
 
     public Text getRoomText(String roomId){

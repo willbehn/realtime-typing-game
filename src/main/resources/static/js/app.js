@@ -156,16 +156,12 @@ function connectToRoom(roomId) {
             updatePositions(positions);
         });
 
-        stompClient.subscribe('/topic/room/' + roomId + '/players', function(message) {
-            const playerCount = message.body;
-            console.log('Received player count: ' + playerCount);
-            displayPlayerCount(playerCount);
-        });
-
         stompClient.subscribe('/topic/room/' + roomId + '/status', function(message) {
             const status = JSON.parse(message.body); 
             const playerNamesMap = status.playerNames;
+            const playerCount = status.playerCount;
             updatePlayerList(playerNamesMap);
+            displayPlayerCount(playerCount);
 
             handleGameStatus(status); 
         });

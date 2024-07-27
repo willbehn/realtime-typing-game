@@ -31,7 +31,7 @@ public class StatusController {
             return roomService.startGameInRoom(roomId);
 
         } catch (RoomNotFoundException exc) {
-            return new StateResponseDto(false, new ConcurrentHashMap<>(), false,new ConcurrentHashMap<>());
+            return new StateResponseDto(false, new ConcurrentHashMap<>(), false,new ConcurrentHashMap<>(),0);
         }
     }
 
@@ -44,7 +44,7 @@ public class StatusController {
             return roomService.getRoomStatus(roomId);
 
         } catch (RoomNotFoundException exc) {
-            return new StateResponseDto(false, new ConcurrentHashMap<>(), false,new ConcurrentHashMap<>());
+            return new StateResponseDto(false, new ConcurrentHashMap<>(), false,new ConcurrentHashMap<>(),0);
         }
     }
 
@@ -54,18 +54,7 @@ public class StatusController {
         try {
             return roomService.markPlayerAsDone(roomId, sessionId);
         } catch (RoomNotFoundException e) {
-            return new StateResponseDto(false, new ConcurrentHashMap<>(), false,new ConcurrentHashMap<>());
-        }
-    }
-
-
-    @MessageMapping("room/{roomId}/players")
-    @SendTo("/topic/room/{roomId}/players")
-    public String getPlayerCount(@DestinationVariable String roomId){
-        try {
-            return roomService.getClientCount(roomId);
-        } catch (RoomNotFoundException exc) {
-            return "0";
+            return new StateResponseDto(false, new ConcurrentHashMap<>(), false,new ConcurrentHashMap<>(),0);
         }
     }
 }
