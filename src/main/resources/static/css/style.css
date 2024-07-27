@@ -1,90 +1,71 @@
-@import url('https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;500;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;500;700&family=Lato:wght@400;700&display=swap');
 
 body {
-    font-family: 'Roboto Mono', monospace;
-    background-color: #1E232A; 
-    color: #D0D7DE; 
+    font-family: 'Lato', sans-serif;
+    background-color: #FAF9F6;
+    color: #2C3E50;
     margin: 0;
     padding: 0;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    height: 100vh;
+    min-height: 100vh;
 }
 
 pre#ascii-art {
     font-family: 'Roboto Mono', monospace;
-    color: #6B9AC4; 
-    font-size: 1.5rem;
+    color: #2C3E50;
+    font-size: 1.8rem;
     white-space: pre;
-    margin: 0;
-    padding: 0;
+    margin: 20px 0;
+    padding: 20px;
+    border-radius: 10px;
 }
 
 button {
-    padding: 10px 20px;
+    padding: 12px 24px;
     margin: 10px;
-    border: none;
-    border-radius: 5px;
-    background-color: #2D9B5F; 
+    border: 2px solid transparent;
+    border-radius: 12px;
+    background-color: #A8DADC;
     color: #FFFFFF;
     cursor: pointer;
     font-size: 16px;
-    font-family: 'Roboto Mono', monospace;
-    transition: background-color 0.3s ease, transform 0.3s ease;
+    font-family: 'Lato', sans-serif;
+    transition: background-color 0.3s ease, transform 0.3s ease, border-color 0.3s ease;
 }
 
 button:hover {
-    background-color: #3AB773; 
-    transform: scale(1.05);
-}
-
-#copy-room-id-button,
-#create-room-button {
-    background-color: #2D9B5F; 
-}
-
-#copy-room-id-button:hover,
-#create-room-button:hover {
-    background-color: #3AB773; 
-    transform: scale(1.05);
-}
-
-#join-room-button,
-#start-game-button {
-    background-color: #7B56D1; 
-}
-
-#join-room-button:hover,
-#start-game-button:hover {
-    background-color: #8C6FD8; 
-    transform: scale(1.05);
+    background-color: #457B9D;
+    border-color: #1D3557;
+    transform: translateY(-2px);
 }
 
 #leave-room-button {
-    background-color: #E74C3C; 
+    background-color: #F28482;
 }
 
 #leave-room-button:hover {
-    background-color: #EC6F6F; 
-    transform: scale(1.05);
+    background-color: #E76F51;
 }
 
 input[type="text"] {
-    padding: 10px;
+    padding: 12px;
     margin: 5px;
-    border-radius: 5px;
+    border-radius: 12px;
     font-size: 16px;
-    background-color: #1F2630; 
-    color: #D0D7DE; 
-    font-family: 'Roboto Mono', monospace;
-    border: none;
+    background-color: #FFFFFF;
+    color: #2C3E50;
+    font-family: 'Lato', sans-serif;
+    border: 2px solid #E0E0E0;
     outline: none;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
 }
 
 input[type="text"]:focus {
-    box-shadow: 0 0 3px #6B9AC4; 
+    border-color: #A8DADC;
+    box-shadow: 0 0 5px rgba(168, 218, 220, 0.5);
 }
 
 #player-name,
@@ -127,11 +108,12 @@ input[type="text"]:focus {
     width: 25%;
     display: flex;
     flex-direction: column;
-    align-items: center;
-    background-color: #1F2630; 
-    padding: 20px;
+    align-items: start;
+    background-color: #EDEDED;
+    padding: 5px;
     box-sizing: border-box;
     overflow-y: auto;
+    border-right: 1px solid #DADADA;
 }
 
 #right-column {
@@ -157,9 +139,8 @@ input[type="text"]:focus {
 
 #player-list li {
     margin: 5px 0;
-    padding: 10px;
-    background-color: #374354; 
-    border-radius: 4px;
+    padding: 5px;
+    border-radius: 8px;
     text-align: center;
 }
 
@@ -168,30 +149,35 @@ input[type="text"]:focus {
     align-items: center;
     justify-content: center;
     padding: 10px;
-    border-radius: 5px;
+    border-radius: 12px;
     margin-bottom: 10px;
+    background-color: #FFFFFF;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 300px;
 }
 
 #timer {
-    font-size: 2rem; 
+    font-size: 2rem;
     font-weight: bold;
-    color: #FFD700; /* Gold color for contrast */
-    margin-right: 20px; /* Adds space between timer and button */
+    color: #457B9D;
+    margin-right: 20px;
 }
 
 #fixedTextContainer {
     margin: 20px;
-    padding: 20px;
+    padding: 30px;
     width: 80%;
-    max-width: 650px;
-    min-height: 150px;
-    line-height: 1.6;
-    font-size: 18px;
-    border-radius: 8px;
+    max-width: 700px;
+    min-height: 200px;
+    line-height: 1.8;
+    font-size: 22px;
+    border-radius: 12px;
     overflow-wrap: break-word;
-    background-color: #1F2630; 
+    background-color: #FFFFFF;
+    border: 1px solid #E0E0E0;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
 }
-
 
 #message-input {
     width: 80%;
@@ -200,11 +186,11 @@ input[type="text"]:focus {
 }
 
 .highlight-client-self {
-    background-color: #4ABF6C; 
+    background-color: #bee3c3;
 }
 
 .highlight-client-opponent {
-    background-color: #F28C8C; 
+    background-color: #ffc1c1;
 }
 
 #alert-container {
@@ -212,10 +198,10 @@ input[type="text"]:focus {
     top: 20px;
     right: 20px;
     padding: 10px 20px;
-    background-color: #6B9AC4;
+    background-color: #2C3E50;
     color: white;
-    border-radius: 5px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    border-radius: 12px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
     z-index: 1000;
     opacity: 0;
     transition: opacity 0.5s;
@@ -236,24 +222,25 @@ input[type="text"]:focus {
     top: 0;
     width: 100%;
     height: 100%;
-    background: rgba(30, 35, 42, 0.9); 
+    background: rgba(0, 0, 0, 0.5);
     z-index: 1001;
     align-items: center;
     justify-content: center;
 }
 
 .modal-content {
-    background-color: #1F2630; 
+    background-color: #FFFFFF;
     margin: auto;
     padding: 20px;
-    border-radius: 5px;
+    border-radius: 12px;
     max-width: 90%;
     width: 400px;
     text-align: center;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
 }
 
 .close-button {
-    color: #D0D7DE; 
+    color: #2C3E50;
     float: right;
     font-size: 25px;
     font-weight: bold;
@@ -264,27 +251,27 @@ input[type="text"]:focus {
 
 .close-button:hover,
 .close-button:focus {
-    color: #6B9AC4; 
+    color: #E76F51;
 }
 
 #popup-message {
-    color: #D0D7DE; 
-    font-family: 'Roboto Mono', monospace;
+    color: #2C3E50;
+    font-family: 'Lato', sans-serif;
     text-align: center;
 }
 
 #about {
     margin-top: 20px;
     padding: 10px;
-    background-color: #1F2630;
-    border-radius: 8px;
+    background-color: #EDEDED;
+    border-radius: 12px;
     text-align: center;
 }
 
 #about p {
     margin: 0;
     font-size: 16px;
-    color: #D0D7DE; 
+    color: #2C3E50;
 }
 
 #github-link {
@@ -292,12 +279,12 @@ input[type="text"]:focus {
     align-items: center;
     justify-content: center;
     text-decoration: none;
-    color: #6B9AC4; 
+    color: #457B9D;
     margin-top: 10px;
 }
 
 #github-link:hover {
-    color: #3D79C1; 
+    color: #1D3557;
 }
 
 #github-logo {
@@ -308,6 +295,5 @@ input[type="text"]:focus {
 
 #github-link span {
     font-size: 16px;
-    font-family: 'Roboto Mono', monospace;
+    font-family: 'Lato', sans-serif;
 }
-
