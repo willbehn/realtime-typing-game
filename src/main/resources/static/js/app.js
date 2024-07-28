@@ -17,6 +17,7 @@ document.addEventListener("DOMContentLoaded", () => {
     document.getElementById("fixedTextContainer").addEventListener("click", enableTyping);
     document.getElementById("message-input").addEventListener("input", sendMessage);
     document.getElementById("start-game-button").addEventListener("click", sendStartToRoom);
+    document.getElementById("leave-game-button").addEventListener("click", leaveRoom);
 
     setupPopupModal();
 });
@@ -124,10 +125,10 @@ function leaveRoom() {
                 //showAlert("Please enter a valid room ID", 3000);
                 //return null;
             } else {
-                //startButton.disabled = false;
                 stopGameTimer();
                 document.getElementById("start-screen").style.display = "flex";
                 document.getElementById("game-screen").style.display = "none";
+                document.getElementById("popup-modal").style.display = "none";
                 resetClient();
                 return response.text();
             }
@@ -251,10 +252,9 @@ function handleGameStatus(status) {
     if (status.done) {
         document.getElementById("message-input").disabled = true;
         const endTimeKeys = Object.keys(status.endTime);
+        stopGameTimer();
         showPopup("Player with id: " + endTimeKeys + " won with " + status.endTime[endTimeKeys[0]] + " words per minute!");
-        setTimeout(function() {
-            leaveRoom();
-        }, 10000);
+        
     } else if (status.gameStarted) {
         showAlert("Game starting in 5 seconds!", 3000);
         document.getElementById("message-input").disabled = true;

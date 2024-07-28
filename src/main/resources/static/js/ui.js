@@ -14,8 +14,9 @@ export function showPopup(message) {
     var modal = document.getElementById("popup-modal");
     var messageParagraph = document.getElementById("popup-message");
     messageParagraph.innerText = message;
-    modal.style.display = "block";
-  }
+
+    modal.style.display = "flex";
+}
 
 export function displayFixedText(text) {
     const fixedTextContainer = document.getElementById("fixedTextContainer");
