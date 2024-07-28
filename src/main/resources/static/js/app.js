@@ -22,123 +22,125 @@ document.addEventListener("DOMContentLoaded", () => {
     setupPopupModal();
 });
 
-function createRoom() {
-    fetch('/api/rooms', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            'Accept': 'application/json'
-        }
-    })
-    .then(response => {
+async function createRoom() {
+    try {
+        const response = await fetch('/api/rooms', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json'
+            }
+        });
+
         if (!response.ok) {
-            throw new Error('Network response was not ok ' + response.statusText);
+            throw new Error('Failed creating new room');
         }
-        return response.json();
-    })
-    .then(data => {
+
+        const data = await response.json();
         console.log('Room created:', data);
+
         currentRoomId = data.id;
-        document.getElementById("current-room-id").textContent = "Room ID: " + currentRoomId;
+        document.getElementById("current-room-id").textContent = `Room ID: ${currentRoomId}`;
         joinCreatedRoom(currentRoomId);
-    })
-    .catch(error => {
-        console.error('Failed to create room:', error);
-    });
+
+    } catch (error) {
+        console.error(error);
+        showAlert("Failed creating new room, try again later", 3000);
+    }
 }
 
-function joinRoom() {
+
+async function joinRoom() {
     const roomId = document.getElementById("join-room-id").value.trim();
     const playerName = document.getElementById("player-name").value;
-    console.log("Trying to join room with id: " + roomId);
-    if (roomId.length > 0) {
-        fetch("/api/rooms/" + roomId + "/join", {
+
+    if (!roomId) {
+        showAlert("Please enter a valid room ID", 3000);
+        return;
+    }
+
+    console.log(`Trying to join room with id: ${roomId}`);
+
+    try {
+        const response = await fetch(`/api/rooms/${roomId}/join`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({ playerName: playerName })
-        })
-        .then(response => {
-            if (!response.ok) {
-                showAlert("Room not available", 3000);
-                return null;
-            } else {
-                return response.json();
-            }
-        })
-        .then(data => {
-            if (data) {
-                sessionId = data.id;
-                console.log("sessionId received: " + data.id);
-                currentRoomId = roomId;
-                document.getElementById("current-room-id").textContent = "Room ID: " + roomId;
-                connectToRoom(roomId);
-            }
-        })
-        .catch(error => {
-            console.error('Failed to join room:', error);
-            showAlert("Failed to join room. Please try again later.", 3000);
+            body: JSON.stringify({ playerName })
         });
-    } else {
-        showAlert("Please enter a valid room ID", 3000);
-    }
-}
 
-function joinCreatedRoom(roomId) {
-    const playerName = document.getElementById("player-name").value;
-    fetch("/api/rooms/" + roomId + "/join", {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ playerName: playerName })
-    })
-    .then(response => {
         if (!response.ok) {
-            showAlert("Please enter a valid room ID", 3000);
-            return null;
-        } else {
-            return response.json();
+            throw new Error('Room not available');
         }
-    })
-    .then(data => {
-        if (data) {
-            sessionId = data.id;
-            connectToRoom(roomId);
-        }
-    })
-    .catch(error => {
+
+        const data = await response.json();
+        sessionId = data.id;
+        console.log(`sessionId received: ${data.id}`);
+
+        currentRoomId = roomId;
+        document.getElementById("current-room-id").textContent = `Room ID: ${roomId}`;
+        connectToRoom(roomId);
+
+    } catch (error) {
         console.error('Failed to join room:', error);
         showAlert("Failed to join room. Please try again later.", 3000);
-    });
-}
-
-
-
-function leaveRoom() {
-    console.log("Leaving room with id: " + currentRoomId);
-    if (currentRoomId.length > 0) {
-        fetch("/api/rooms/" + currentRoomId +"/leave?sessionId="+ sessionId,{method: 'POST'})
-        .then(response => {
-            if (!response.ok) {
-                //showAlert("Please enter a valid room ID", 3000);
-                //return null;
-            } else {
-                stopGameTimer();
-                document.getElementById("start-screen").style.display = "flex";
-                document.getElementById("game-screen").style.display = "none";
-                document.getElementById("popup-modal").style.display = "none";
-                resetClient();
-                return response.text();
-            }
-        })
-        .catch(error => {
-            console.error('Failed to leave room:', error);
-            showAlert("Failed to leave room. Please try again later.", 3000);
-        });
     }
 }
+
+
+async function joinCreatedRoom(roomId) {
+    const playerName = document.getElementById("player-name").value;
+    
+    try {
+        const response = await fetch(`/api/rooms/${roomId}/join`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ playerName })
+        });
+
+        if (!response.ok) {
+            throw new Error('Failed to join created room');
+        }
+
+        const data = await response.json();
+        sessionId = data.id;
+        connectToRoom(roomId);
+
+    } catch (error) {
+        console.error(error);
+        showAlert("Failed to join room. Please try again later.", 3000);
+    }
+}
+
+
+
+async function leaveRoom() {
+    console.log(`Leaving room with id: ${currentRoomId}`);
+
+    if (currentRoomId.length === 0) return;
+
+    try {
+        const url = `/api/rooms/${currentRoomId}/leave?sessionId=${sessionId}`;
+        const response = await fetch(url, { method: 'POST' });
+
+        if (!response.ok) {
+            showAlert("Failed leaving room, try again later.", 3000);
+            return;
+        }
+
+        stopGameTimer();
+        document.getElementById("start-screen").style.display = "flex";
+        document.getElementById("game-screen").style.display = "none";
+        document.getElementById("popup-modal").style.display = "none";
+        resetClient();
+
+    } catch (error) {
+        console.error('Failed to leave room:', error);
+        showAlert("Failed to leave room. Please try again later.", 3000);
+    }
+}
+
 
 function connectToRoom(roomId) {
     stompClient = Stomp.over(new SockJS('/ws'));
@@ -183,22 +185,25 @@ function sendStartToRoom() {
     stompClient.send(`/app/room/${currentRoomId}/start`, {}, {});
 }
 
-function fetchInitialData() {
-    fetch("/api/rooms/" + currentRoomId + "/text",{method: 'GET'})
-        .then(response => response.json())
-        .then(data => {
-            console.log('Received fixed text:', data);
-            displayFixedText(data.textString);
-        })
-        .catch(error => {
-            console.error('Failed to fetch fixed text:', error);
-        });
+async function fetchInitialData() {
+    try {
+        const response = await fetch(`/api/rooms/${currentRoomId}/text`, { method: 'GET' });
 
-    stompClient.send("/app/room/" + currentRoomId + "/players", {}, "");
+        if (!response.ok) {
+            throw new Error('Failed to fetch fixed text');
+        }
 
-    const timer = document.getElementById("timer");
-    timer.textContent = "0:00";
+        const data = await response.json();
+        console.log('Received fixed text:', data);
+
+        displayFixedText(data.textString);
+
+    } catch (error) {
+        console.error('Failed to fetch fixed text:', error);
+    }
+    document.getElementById("timer").textContent = "0:00";
 }
+
 
 
 
@@ -297,7 +302,7 @@ function resetClient(){
 
 function setupPopupModal() {
     const modal = document.getElementById("popup-modal");
-    const closeButton = document.getElementsByClassName("close-button")[0];
+    const closeButton = document.getElementsByClassName("close-button");
 
     closeButton.onclick = () => {
         modal.style.display = "none";
