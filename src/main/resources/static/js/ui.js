@@ -27,3 +27,14 @@ export function displayPlayerCount(playerCount) {
     const playerCountContainer = document.getElementById("player-count");
     playerCountContainer.textContent = playerCount;
 }
+
+export function updatePlayerList(playerNamesMap) {
+    const playerListContainer = document.getElementById("player-list");
+    playerListContainer.innerHTML = '';
+
+    Object.values(playerNamesMap).forEach(name => {
+        const listItem = document.createElement("li");
+        listItem.textContent = name;
+        playerListContainer.appendChild(listItem);
+    });
+}

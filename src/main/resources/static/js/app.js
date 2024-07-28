@@ -1,10 +1,11 @@
-import { showPopup,showAlert, displayFixedText, displayPlayerCount } from './ui.js';
-import { handleCountdown, resetCountdown, countdown } from './countdown.js';
+import { showPopup,showAlert, displayFixedText, displayPlayerCount, updatePlayerList } from './ui.js';
+import { handleCountdown, resetCountdown, countdown, startGameTimer, stopGameTimer } from './timer.js';
+import { setupPopupModal, enableTyping } from './utils.js';
+
 
 let stompClient = null;
 let currentRoomId = null;
 let sessionId = null;
-let timerInterval;
 let gameStarted = false;
 
 
@@ -211,30 +212,36 @@ function updatePositions(positionDto) {
     const fixedTextContainer = document.getElementById("fixedTextContainer");
     const fixedText = fixedTextContainer.textContent;
     const positions = positionDto.positions;
+    const textLength = fixedText.length;
+    
+    for (const sessionIdTest in positions) {
+        if (positions[sessionIdTest] === textLength) {
+            stompClient.send(`/app/room/${currentRoomId}/player/${sessionIdTest}/done`, {}, {});
+            return;
+        }
+    }
 
-    let htmlContent = '';
-    for (let i = 0; i < fixedText.length; i++) {
-        let charClass = '';
+    const getHighlightClass = (charIndex) => {
         for (const sessionIdTest in positions) {
-            if (positions[sessionIdTest] === (fixedText.length)){
-                stompClient.send(`/app/room/${currentRoomId}/player/${sessionIdTest}/done`, {}, {});
-                return;
-            }
-
-            if (positions[sessionIdTest] === i) {
-                if (sessionIdTest == sessionId){
-                    charClass = 'highlight-client-self';
-
-                } else {
-                    charClass = 'highlight-client-opponent';
-                }
-                break;
+            if (positions[sessionIdTest] === charIndex) {
+                return sessionIdTest === sessionId ? 'highlight-client-self' : 'highlight-client-opponent';
             }
         }
-        htmlContent += `<span class="${charClass}">${fixedText.charAt(i)}</span>`;
-    }
-    fixedTextContainer.innerHTML = htmlContent;
+        return '';
+    };
+
+    const buildHtmlContent = () => {
+        let html = '';
+        for (let i = 0; i < textLength; i++) {
+            const charClass = getHighlightClass(i);
+            html += `<span class="${charClass}">${fixedText.charAt(i)}</span>`;
+        }
+        return html;
+    };
+
+    fixedTextContainer.innerHTML = buildHtmlContent();
 }
+
 
 
 function startGame() {
@@ -242,7 +249,9 @@ function startGame() {
 
     resetCountdown();
 
-    document.getElementById("message-input").disabled = false;
+    const messageInput = document.getElementById("message-input");
+    messageInput.disabled = false;
+    messageInput.focus(); 
     startGameTimer();
 
     const startButton = document.getElementById('start-game-button');
@@ -269,24 +278,6 @@ function handleGameStatus(status) {
 }
 
 
-function startGameTimer() {
-    let gameTime = 0;
-    const timerElement = document.getElementById('timer');
-
-    const updateTimer = () => {
-        gameTime++;
-        const minutes = Math.floor(gameTime / 60);
-        const seconds = gameTime % 60;
-        timerElement.textContent = `${minutes}:${seconds < 10 ? '0' + seconds : seconds}`;
-    };
-
-    updateTimer();
-    timerInterval = setInterval(updateTimer, 1000); 
-}
-
-function stopGameTimer() {
-    clearInterval(timerInterval); 
-}
 
 function resetClient(){
     stompClient = null;
@@ -300,20 +291,6 @@ function resetClient(){
 }
 
 
-function setupPopupModal() {
-    const modal = document.getElementById("popup-modal");
-    const closeButton = document.getElementsByClassName("close-button");
-
-    closeButton.onclick = () => {
-        modal.style.display = "none";
-    };
-
-    window.onclick = (event) => {
-        if (event.target === modal) {
-            modal.style.display = "none";
-        }
-    };
-}
 
 function copyToClipboard() {
     const roomIdWithText = document.getElementById("current-room-id").innerText.split(" ");
@@ -326,21 +303,7 @@ function copyToClipboard() {
     });
 }
 
-function enableTyping() {
-    const messageInput = document.getElementById("message-input");
-    messageInput.focus();
-}
 
-function updatePlayerList(playerNamesMap) {
-    const playerListContainer = document.getElementById("player-list");
-    playerListContainer.innerHTML = '';
-
-    Object.values(playerNamesMap).forEach(name => {
-        const listItem = document.createElement("li");
-        listItem.textContent = name;
-        playerListContainer.appendChild(listItem);
-    });
-}
   
  
 
