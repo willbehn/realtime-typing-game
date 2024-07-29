@@ -38,3 +38,8 @@ export function updatePlayerList(playerNamesMap) {
         playerListContainer.appendChild(listItem);
     });
 }
+
+export function updateAccuracyDisplay() {
+    const accuracyPercentage = (totalCharsTyped === 0) ? 100 : (correctCharsTyped / totalCharsTyped) * 100;
+    document.getElementById("accuracy").textContent = `${accuracyPercentage.toFixed(0)}%`;
+}

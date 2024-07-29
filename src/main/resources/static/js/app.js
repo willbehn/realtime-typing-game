@@ -1,13 +1,15 @@
-import { showPopup,showAlert, displayFixedText, displayPlayerCount, updatePlayerList } from './ui.js';
+import { showPopup, showAlert, displayFixedText, displayPlayerCount, updatePlayerList, updateAccuracyDisplay } from './ui.js';
 import { handleCountdown, resetCountdown, countdown, startGameTimer, stopGameTimer } from './timer.js';
 import { setupPopupModal, enableTyping } from './utils.js';
-
 
 let stompClient = null;
 let currentRoomId = null;
 let sessionId = null;
 let gameStarted = false;
 
+let totalCharsTyped = 0;
+let correctCharsTyped = 0;
+let textPos = 0;
 
 document.addEventListener("DOMContentLoaded", () => {
     document.getElementById("create-room-button").addEventListener("click", createRoom);
@@ -50,7 +52,6 @@ async function createRoom() {
     }
 }
 
-
 async function joinRoom() {
     const roomId = document.getElementById("join-room-id").value.trim();
     const playerName = document.getElementById("player-name").value;
@@ -89,7 +90,6 @@ async function joinRoom() {
     }
 }
 
-
 async function joinCreatedRoom(roomId) {
     const playerName = document.getElementById("player-name").value;
     
@@ -113,8 +113,6 @@ async function joinCreatedRoom(roomId) {
         showAlert("Failed to join room. Please try again later.", 3000);
     }
 }
-
-
 
 async function leaveRoom() {
     console.log(`Leaving room with id: ${currentRoomId}`);
@@ -142,11 +140,9 @@ async function leaveRoom() {
     }
 }
 
-
 function connectToRoom(roomId) {
     stompClient = Stomp.over(new SockJS('/ws'));
-    console.log("SessionId recieved from server: " + sessionId);
-
+    console.log("SessionId received from server: " + sessionId);
 
     stompClient.connect({}, function(frame) {
         console.log('Connected: ' + frame);
@@ -169,18 +165,33 @@ function connectToRoom(roomId) {
 
             handleGameStatus(status); 
         });
-        //TODO add to its own function when refactoring playercount
+        // TODO: Add to its own function when refactoring player count
         stompClient.send("/app/room/" + currentRoomId + "/status", {}, "");
     });
 }
 
 function sendMessage() {
     const messageInput = document.getElementById("message-input").value;
+    const fixedTextContainer = document.getElementById("fixedTextContainer");
+    const fixedText = fixedTextContainer.textContent; 
+
     if (messageInput.length > 0) {
-        stompClient.send("/app/room/" + currentRoomId, {sessionId: sessionId}, messageInput);
+        const lastChar = messageInput.charAt(0).toLowerCase(); 
+        const expectedChar = fixedText.charAt(textPos).toLowerCase(); 
+
+        totalCharsTyped++;
+
+        if (lastChar === expectedChar) {
+            correctCharsTyped++;
+            textPos++;
+        } 
+        updateAccuracyDisplay();
+
+        stompClient.send("/app/room/" + currentRoomId, { sessionId: sessionId }, messageInput);
         document.getElementById("message-input").value = '';
     }
 }
+
 
 function sendStartToRoom() {
     stompClient.send(`/app/room/${currentRoomId}/start`, {}, {});
@@ -204,9 +215,6 @@ async function fetchInitialData() {
     }
     document.getElementById("timer").textContent = "0:00";
 }
-
-
-
 
 function updatePositions(positionDto) {
     const fixedTextContainer = document.getElementById("fixedTextContainer");
@@ -242,8 +250,6 @@ function updatePositions(positionDto) {
     fixedTextContainer.innerHTML = buildHtmlContent();
 }
 
-
-
 function startGame() {
     if (countdown > 0) return;
 
@@ -258,7 +264,6 @@ function startGame() {
     startButton.textContent = 'Game going!';
     startButton.disabled = true;
 }
-
 
 function handleGameStatus(status) {
     console.log(status);
@@ -278,19 +283,20 @@ function handleGameStatus(status) {
 }
 
 
-
-function resetClient(){
+function resetClient() {
     stompClient = null;
     currentRoomId = null;
     sessionId = null;
     gameStarted = false;
-   
+    totalCharsTyped = 0;
+    correctCharsTyped = 0;
+    textPos = 0;
+    updateAccuracyDisplay();
+
     const startButton = document.getElementById('start-game-button');
     startButton.textContent = 'Start game';
     startButton.disabled = false;
 }
-
-
 
 function copyToClipboard() {
     const roomIdWithText = document.getElementById("current-room-id").innerText.split(" ");
@@ -303,8 +309,5 @@ function copyToClipboard() {
     });
 }
 
-
-  
- 
 
   
