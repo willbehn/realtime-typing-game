@@ -1,4 +1,4 @@
-import { showPopup, showAlert, displayFixedText, displayPlayerCount, updatePlayerList, updateAccuracyDisplay } from './ui.js';
+import { showPopup, showAlert, displayFixedText, displayPlayerCount, updatePlayerList } from './ui.js';
 import { handleCountdown, resetCountdown, countdown, startGameTimer, stopGameTimer } from './timer.js';
 import { setupPopupModal, enableTyping } from './utils.js';
 
@@ -7,8 +7,8 @@ let currentRoomId = null;
 let sessionId = null;
 let gameStarted = false;
 
-let totalCharsTyped = 0;
-let correctCharsTyped = 0;
+export let totalCharsTyped = 0;
+export let correctCharsTyped = 0;
 let textPos = 0;
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -309,5 +309,8 @@ function copyToClipboard() {
     });
 }
 
-
+export function updateAccuracyDisplay() {
+    const accuracyPercentage = (totalCharsTyped === 0) ? 100 : (correctCharsTyped / totalCharsTyped) * 100;
+    document.getElementById("accuracy").textContent = `${accuracyPercentage.toFixed(0)}%`;
+}
   
