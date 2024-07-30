@@ -26,14 +26,16 @@ Check out the live demo: [TypeSprint Demo](https://typestomp.onrender.com) (host
 
 - **Real-time Position Tracking**: Players positions in the text are tracked in real-time using the STOMP protocol over WebSockets, allowing all players to see each other's progress.
 
-
 ## Technologies Used
 
-- Java
-- Spring Boot
-- WebSockets (STOMP)
-- Gradle
-- HTML/CSS/JavaScript
+- ![Java](https://img.shields.io/badge/Java-ED8B00?style=for-the-badge&logo=java&logoColor=white)
+- ![Spring Boot](https://img.shields.io/badge/Spring%20Boot-6DB33F?style=for-the-badge&logo=spring-boot&logoColor=white)
+- ![WebSockets](https://img.shields.io/badge/WebSockets-001E2B?style=for-the-badge&logo=websocket&logoColor=white)
+- ![Gradle](https://img.shields.io/badge/Gradle-02303A?style=for-the-badge&logo=gradle&logoColor=white)
+- ![HTML](https://img.shields.io/badge/HTML-239120?style=for-the-badge&logo=html5&logoColor=white)
+- ![CSS](https://img.shields.io/badge/CSS-254BDD?style=for-the-badge&logo=css3&logoColor=white)
+- ![JavaScript](https://img.shields.io/badge/JavaScript-323330?style=for-the-badge&logo=javascript&logoColor=F7DF1E)
+
 
 ## Getting Started
 
@@ -60,6 +62,26 @@ Check out the live demo: [TypeSprint Demo](https://typestomp.onrender.com) (host
     ```bash
     ./gradlew bootRun
     ```
+
+### Docker
+
+A docker file is also included to containerize TypeSprint. To build the image follow these steps:
+
+1. **Make a Clean Build**:
+    ```bash
+    ./gradlew clean build
+    ```
+
+2. **Build the Docker Image**:
+    ```bash
+    docker build -t typesprint .
+    ```
+
+3. **Run the Docker Container**:
+    ```bash
+    docker run -p 8080:8080 typesprint
+    ```
+
 
 ## Usage
 
