@@ -156,7 +156,13 @@ function connectToRoom(roomId) {
 
         stompClient.subscribe('/topic/room/' + roomId + '/positions', function(message) {
             const positions = JSON.parse(message.body);
-            updatePositions(positions);
+
+            if (positions.status === "success"){
+                updatePositions(positions);
+            } else {
+                console.error("Access denied");
+            }
+            
         });
 
         stompClient.subscribe('/topic/room/' + roomId + '/status', function(message) {

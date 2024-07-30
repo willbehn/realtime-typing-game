@@ -56,12 +56,13 @@ public class RoomController {
             
             String sessionId = roomService.addClientToRoom(roomId, playerName);
 
-            // TODO cookies is correctly set when joining
             Cookie sessionCookie = new Cookie("sessionId", sessionId);
-            sessionCookie.setPath("/"); //which paths
+            sessionCookie.setPath("/"); 
             sessionCookie.setHttpOnly(false); //For restrictiing js access, set to true when working
             sessionCookie.setMaxAge(10000); 
             response.addCookie(sessionCookie);
+
+            //Still necessary to return sessionId since webscoket library in use dont support cookies
             return ResponseEntity.ok("{\"id\":\"" + sessionId + "\"}");
         
         } catch (RoomNotFoundException exc) {
