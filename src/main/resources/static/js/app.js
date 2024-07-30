@@ -67,7 +67,8 @@ async function joinRoom() {
         const response = await fetch(`/api/rooms/${roomId}/join`, {
             method: 'POST',
             headers: {
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                credentials: 'include' 
             },
             body: JSON.stringify({ playerName })
         });
@@ -141,7 +142,7 @@ async function leaveRoom() {
 }
 
 function connectToRoom(roomId) {
-    stompClient = Stomp.over(new SockJS('/ws'));
+    stompClient = Stomp.over(new SockJS('/ws', null, { withCredentials: true }));
     console.log("SessionId received from server: " + sessionId);
 
     stompClient.connect({}, function(frame) {
