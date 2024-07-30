@@ -68,7 +68,7 @@ async function joinRoom() {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                credentials: 'include' 
+                'credentials': 'include' 
             },
             body: JSON.stringify({ playerName })
         });
@@ -96,9 +96,9 @@ async function joinCreatedRoom(roomId) {
     
     try {
         const response = await fetch(`/api/rooms/${roomId}/join`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ playerName })
+            'method': 'POST',
+            'headers': { 'Content-Type': 'application/json' },
+            'body': JSON.stringify({ playerName })
         });
 
         if (!response.ok) {
@@ -122,7 +122,9 @@ async function leaveRoom() {
 
     try {
         const url = `/api/rooms/${currentRoomId}/leave?sessionId=${sessionId}`;
-        const response = await fetch(url, { method: 'POST' });
+        const response = await fetch(url, { 
+            'method': 'POST' ,
+            'credentials': 'include' });
 
         if (!response.ok) {
             showAlert("Failed leaving room, try again later.", 3000);

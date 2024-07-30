@@ -2,6 +2,7 @@ package no.behn.typingStomp.service;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import no.behn.typingStomp.dto.StateResponseDto;
@@ -68,15 +69,18 @@ public class RoomService {
         return sessionId;
     }
 
-    public void removeClientFromRoom(String roomId, String sessionId) {
+    public ResponseEntity<String>removeClientFromRoom(String roomId, String sessionId) {
         Room room = getRoom(roomId);
         log.info("Removing client with sessionId: " + sessionId + " from roomId: " + roomId);
         room.removeClient(sessionId);
 
         // Removes the room if there are no players remaining
         if (room.getPlayerCount() == 0){
+            log.info("No players left in room with id " + roomId +", deleting room");
             rooms.remove(roomId);
         }
+
+        return ResponseEntity.ok("Room left successfully");
     }
 
     public String getPlayerCount(String roomId){

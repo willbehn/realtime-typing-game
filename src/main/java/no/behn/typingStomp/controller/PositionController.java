@@ -23,8 +23,6 @@ public class PositionController {
     @MessageMapping("/room/{roomId}")
     @SendTo("/topic/room/{roomId}/positions")
     public PositionDto handlePosition(@DestinationVariable String roomId, String message, StompHeaderAccessor headerAccessor) {
-        String sessionId = (String) headerAccessor.getSessionAttributes().get("sessionId");
-        System.out.println("Session ID from WebSocket: " + sessionId);
         return positionService.handlePosition(roomId, message, headerAccessor);
     }
 }

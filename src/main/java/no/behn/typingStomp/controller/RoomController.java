@@ -4,10 +4,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.client.support.HttpAccessor;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import no.behn.typingStomp.dto.JoinRoomRequest;
 import no.behn.typingStomp.exception.RoomNotFoundException;
@@ -68,10 +70,21 @@ public class RoomController {
 }
 
     @PostMapping("/{roomId}/leave")
-    public ResponseEntity<String> leaveRoom(@PathVariable String roomId, @RequestParam String sessionId) {
+    public ResponseEntity<String> leaveRoom(@PathVariable String roomId, HttpServletRequest request) {
         try {
-            roomService.removeClientFromRoom(roomId, sessionId);
-            return ResponseEntity.ok("Room leaves");
+            String sessionIdFromCookie = null;
+            Cookie[] cookies = request.getCookies();
+
+            if (cookies != null) {
+                for (Cookie cookie : cookies) {
+                    if ("sessionId".equals(cookie.getName())) {
+                        sessionIdFromCookie = cookie.getValue();
+                        break;
+                    }
+                }
+            }
+
+            return roomService.removeClientFromRoom(roomId, sessionIdFromCookie);
 
         } catch (RoomNotFoundException exc){
             throw new ResponseStatusException(
