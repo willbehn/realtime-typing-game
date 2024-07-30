@@ -22,8 +22,13 @@ public class PositionService {
     public PositionDto handlePosition(String roomId, String message, StompHeaderAccessor headerAccessor) {
         String sessionId = headerAccessor.getFirstNativeHeader("sessionId");
         Room room = roomService.getRoom(roomId);
+
         Map<String, Integer> roomClientPositions = room.getClientPositions();
         String text = room.getText().getTextString();
+
+        if (!roomClientPositions.containsKey(sessionId)){
+            return new PositionDto(null, "Access Denied: You do not have access to this room.", "error");
+        }
 
         int position = roomClientPositions.get(sessionId);
 
@@ -32,7 +37,7 @@ public class PositionService {
             roomClientPositions.put(sessionId, position);
         }
 
-        return new PositionDto(roomClientPositions, "Position updated successfully.");
+        return new PositionDto(roomClientPositions, "Position updated successfully.", "success");
     }
 }
 

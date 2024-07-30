@@ -67,7 +67,8 @@ async function joinRoom() {
         const response = await fetch(`/api/rooms/${roomId}/join`, {
             method: 'POST',
             headers: {
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                'credentials': 'include' 
             },
             body: JSON.stringify({ playerName })
         });
@@ -95,9 +96,9 @@ async function joinCreatedRoom(roomId) {
     
     try {
         const response = await fetch(`/api/rooms/${roomId}/join`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ playerName })
+            'method': 'POST',
+            'headers': { 'Content-Type': 'application/json' },
+            'body': JSON.stringify({ playerName })
         });
 
         if (!response.ok) {
@@ -121,7 +122,9 @@ async function leaveRoom() {
 
     try {
         const url = `/api/rooms/${currentRoomId}/leave?sessionId=${sessionId}`;
-        const response = await fetch(url, { method: 'POST' });
+        const response = await fetch(url, { 
+            'method': 'POST' ,
+            'credentials': 'include' });
 
         if (!response.ok) {
             showAlert("Failed leaving room, try again later.", 3000);
@@ -141,7 +144,7 @@ async function leaveRoom() {
 }
 
 function connectToRoom(roomId) {
-    stompClient = Stomp.over(new SockJS('/ws'));
+    stompClient = Stomp.over(new SockJS('/ws', null, { withCredentials: true }));
     console.log("SessionId received from server: " + sessionId);
 
     stompClient.connect({}, function(frame) {
@@ -153,7 +156,13 @@ function connectToRoom(roomId) {
 
         stompClient.subscribe('/topic/room/' + roomId + '/positions', function(message) {
             const positions = JSON.parse(message.body);
-            updatePositions(positions);
+
+            if (positions.status === "success"){
+                updatePositions(positions);
+            } else {
+                console.error("Access denied");
+            }
+            
         });
 
         stompClient.subscribe('/topic/room/' + roomId + '/status', function(message) {
