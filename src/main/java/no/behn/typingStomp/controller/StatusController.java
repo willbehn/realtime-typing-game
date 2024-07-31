@@ -2,6 +2,8 @@ package no.behn.typingStomp.controller;
 
 import java.util.concurrent.ConcurrentHashMap;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
@@ -15,7 +17,8 @@ import no.behn.typingStomp.service.RoomService;
 
 @Controller
 public class StatusController {
-    
+
+    private static final Logger log = LoggerFactory.getLogger(StatusController.class);
     private final RoomService roomService;
 
     @Autowired
@@ -26,35 +29,43 @@ public class StatusController {
     @MessageMapping("/room/{roomId}/start")
     @SendTo("/topic/room/{roomId}/status")
     public StateResponseDto startSession(@DestinationVariable String roomId, StompHeaderAccessor headerAccessor) {
-        System.out.println("Starting game in room: " + roomId);
-        
+        log.info("Starting game in room: {}", roomId);
+
         try {
             return roomService.startGameInRoom(roomId, headerAccessor);
-
         } catch (RoomNotFoundException exc) {
-            return new StateResponseDto(false, new ConcurrentHashMap<>(), false,new ConcurrentHashMap<>(),0, "error");
+            log.error("Room not found: {}", roomId, exc);
+            return createErrorResponse();
         }
     }
 
     @MessageMapping("/room/{roomId}/status")
     @SendTo("/topic/room/{roomId}/status")
     public StateResponseDto getStatus(@DestinationVariable String roomId, StompHeaderAccessor headerAccessor) {
-        
+        log.info("Fetching status for room: {}", roomId);
+
         try {
             return roomService.getRoomStatus(roomId, headerAccessor);
-
         } catch (RoomNotFoundException exc) {
-            return new StateResponseDto(false, new ConcurrentHashMap<>(), false,new ConcurrentHashMap<>(),0, "error");
+            log.error("Room not found: {}", roomId, exc);
+            return createErrorResponse();
         }
     }
 
     @MessageMapping("/room/{roomId}/done")
     @SendTo("/topic/room/{roomId}/status")
     public StateResponseDto playerDone(@DestinationVariable String roomId, StompHeaderAccessor headerAccessor) {
+        log.info("Player marked as done in room: {}", roomId);
+
         try {
             return roomService.markPlayerAsDone(roomId, headerAccessor);
-        } catch (RoomNotFoundException e) {
-            return new StateResponseDto(false, new ConcurrentHashMap<>(), false,new ConcurrentHashMap<>(),0, "error");
+        } catch (RoomNotFoundException exc) {
+            log.error("Room not found: {}", roomId, exc);
+            return createErrorResponse();
         }
+    }
+
+    private StateResponseDto createErrorResponse() {
+        return new StateResponseDto(false, new ConcurrentHashMap<>(), false, new ConcurrentHashMap<>(), 0, "error");
     }
 }
