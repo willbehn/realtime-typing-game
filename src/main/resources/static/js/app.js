@@ -1,4 +1,4 @@
-import { showPopup, showAlert, displayFixedText, displayPlayerCount, updatePlayerList } from './ui.js';
+import { showPopup, showAlert, displayFixedText, displayPlayerCount, updatePlayerList, updateCurrentRoomDisplay } from './ui.js';
 import { handleCountdown, resetCountdown, countdown, startGameTimer, stopGameTimer } from './timer.js';
 import { setupPopupModal, enableTyping } from './utils.js';
 
@@ -12,6 +12,11 @@ export let correctCharsTyped = 0;
 let textPos = 0;
 
 document.addEventListener("DOMContentLoaded", () => {
+    setupEventListeners();
+    setupPopupModal();
+});
+
+function setupEventListeners() {
     document.getElementById("create-room-button").addEventListener("click", createRoom);
     document.getElementById("join-room-button").addEventListener("click", joinRoom);
     document.getElementById("copy-room-id-button").addEventListener("click", copyToClipboard);
@@ -21,34 +26,34 @@ document.addEventListener("DOMContentLoaded", () => {
     document.getElementById("message-input").addEventListener("input", sendMessage);
     document.getElementById("start-game-button").addEventListener("click", sendStartToRoom);
     document.getElementById("leave-game-button").addEventListener("click", leaveRoom);
+}
 
-    setupPopupModal();
-});
+async function apiRequest(url, method, body = null) {
+    const options = {
+        method,
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include'
+    };
+    if (body) options.body = JSON.stringify(body);
+
+    const response = await fetch(url, options);
+    if (!response.ok) throw new Error('Network response was not ok');
+    return response.json();
+}
+
+function handleError(error, message) {
+    console.error(error);
+    showAlert(message, 3000);
+}
 
 async function createRoom() {
     try {
-        const response = await fetch('/api/rooms', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Accept': 'application/json'
-            }
-        });
-
-        if (!response.ok) {
-            throw new Error('Failed creating new room');
-        }
-
-        const data = await response.json();
-        console.log('Room created:', data);
-
+        const data = await apiRequest('/api/rooms', 'POST');
         currentRoomId = data.id;
-        document.getElementById("current-room-id").textContent = `Room ID: ${currentRoomId}`;
+        updateCurrentRoomDisplay(currentRoomId);
         joinRoom();
-
     } catch (error) {
-        console.error(error);
-        showAlert("Failed creating new room, try again later", 3000);
+        handleError(error, "Failed creating new room, try again later");
     }
 }
 

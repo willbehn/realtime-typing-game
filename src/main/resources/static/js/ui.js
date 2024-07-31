@@ -38,3 +38,7 @@ export function updatePlayerList(playerNamesMap) {
         playerListContainer.appendChild(listItem);
     });
 }
+
+export function updateCurrentRoomDisplay(roomId) {
+    document.getElementById("current-room-id").textContent = `Room ID: ${roomId}`;
+}

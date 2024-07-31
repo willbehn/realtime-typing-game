@@ -158,12 +158,12 @@ input[type="text"]:focus {
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-/* Status container styling */
+
 #status-container {
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 5px 10px; /* Reduced padding on top/bottom and sides */
+    padding: 5px 10px; 
     border-radius: 12px;
     margin-bottom: 10px;
     background-color: #FFFFFF;
@@ -188,10 +188,9 @@ input[type="text"]:focus {
     margin-right: 20px;
 }
 
-/* Text container styling */
 #fixedTextContainer {
     margin: 20px;
-    padding: 10px 15px; /* Reduced padding on top/bottom and sides */
+    padding: 10px 15px; 
     width: 80%;
     max-width: 700px;
     min-height: 200px;
@@ -357,12 +356,12 @@ input[type="text"]:focus {
     text-align: center;
 }
 
-/* Media Queries for Small Screens */
+
 @media (max-width: 700px) {
     #status-container, #fixedTextContainer {
         max-width: 90%;
-        padding: 5px 10px; /* Adjust padding */
-        font-size: 18px; /* Adjust text size */
+        padding: 5px 10px; 
+        font-size: 18px; 
     }
 }
 
@@ -370,7 +369,7 @@ input[type="text"]:focus {
     #status-container, #fixedTextContainer {
         width: 100%;
         max-width: 100%;
-        padding: 5px; /* Further reduce padding */
-        font-size: 16px; /* Further adjust text size */
+        padding: 5px; 
+        font-size: 16px; 
     }
 }
