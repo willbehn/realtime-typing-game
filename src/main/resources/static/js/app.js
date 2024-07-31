@@ -171,21 +171,12 @@ function sendStartToRoom() {
 
 async function fetchInitialData() {
     try {
-        const response = await fetch(`/api/rooms/${currentRoomId}/text`, { method: 'GET' });
-
-        if (!response.ok) {
-            throw new Error('Failed to fetch fixed text');
-        }
-
-        const data = await response.json();
-        console.log('Received fixed text:', data);
-
+        const data = await apiRequest(`/api/rooms/${currentRoomId}/text`, 'GET');
         displayFixedText(data.textString);
-
+        document.getElementById("timer").textContent = "0:00";
     } catch (error) {
         console.error('Failed to fetch fixed text:', error);
     }
-    document.getElementById("timer").textContent = "0:00";
 }
 
 function updatePositions(positionDto) {
