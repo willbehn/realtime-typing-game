@@ -24,7 +24,6 @@ pre#ascii-art {
     border-radius: 10px;
 }
 
-
 button {
     padding: 12px 24px;
     margin: 10px;
@@ -159,17 +158,21 @@ input[type="text"]:focus {
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
+/* Status container styling */
 #status-container {
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 10px;
+    padding: 5px 10px; /* Reduced padding on top/bottom and sides */
     border-radius: 12px;
     margin-bottom: 10px;
     background-color: #FFFFFF;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    width: 100%;
+    width: 80%;
     max-width: 500px;
+    box-sizing: border-box;
+    overflow-wrap: break-word;
+    word-wrap: break-word;
 }
 
 #timer {
@@ -185,20 +188,23 @@ input[type="text"]:focus {
     margin-right: 20px;
 }
 
+/* Text container styling */
 #fixedTextContainer {
     margin: 20px;
-    padding: 30px;
+    padding: 10px 15px; /* Reduced padding on top/bottom and sides */
     width: 80%;
     max-width: 700px;
     min-height: 200px;
     line-height: 1.8;
     font-size: 22px;
     border-radius: 12px;
-    overflow-wrap: break-word;
     background-color: #FFFFFF;
     border: 1px solid #E0E0E0;
     box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
     cursor: pointer;
+    box-sizing: border-box;
+    overflow-wrap: break-word;
+    word-wrap: break-word;
 }
 
 #message-input {
@@ -349,4 +355,22 @@ input[type="text"]:focus {
     font-size: 14px;
     color: #888; 
     text-align: center;
+}
+
+/* Media Queries for Small Screens */
+@media (max-width: 700px) {
+    #status-container, #fixedTextContainer {
+        max-width: 90%;
+        padding: 5px 10px; /* Adjust padding */
+        font-size: 18px; /* Adjust text size */
+    }
+}
+
+@media (max-width: 500px) {
+    #status-container, #fixedTextContainer {
+        width: 100%;
+        max-width: 100%;
+        padding: 5px; /* Further reduce padding */
+        font-size: 16px; /* Further adjust text size */
+    }
 }
