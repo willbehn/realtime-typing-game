@@ -1,15 +1,7 @@
 import { showPopup, showAlert, displayFixedText, displayPlayerCount, updatePlayerList, updateCurrentRoomDisplay } from './ui.js';
 import { handleCountdown, resetCountdown, countdown, startGameTimer, stopGameTimer } from './timer.js';
 import { setupPopupModal, enableTyping } from './utils.js';
-
-let stompClient = null;
-let currentRoomId = null;
-let sessionId = null;
-let gameStarted = false;
-
-export let totalCharsTyped = 0;
-export let correctCharsTyped = 0;
-let textPos = 0;
+import State from './state.js';
 
 document.addEventListener("DOMContentLoaded", () => {
     setupEventListeners();
@@ -49,8 +41,8 @@ function handleError(error, message) {
 async function createRoom() {
     try {
         const data = await apiRequest('/api/rooms', 'POST');
-        currentRoomId = data.id;
-        updateCurrentRoomDisplay(currentRoomId);
+        State.currentRoomId = data.id;
+        updateCurrentRoomDisplay(State.currentRoomId);
         joinRoom();
     } catch (error) {
         handleError(error, "Failed creating new room, try again later");
@@ -58,9 +50,9 @@ async function createRoom() {
 }
 
 async function joinRoom() {
-    if (!currentRoomId) {
-        currentRoomId = document.getElementById("join-room-id").value.trim();
-        if (!currentRoomId) {
+    if (!State.currentRoomId) {
+        State.currentRoomId = document.getElementById("join-room-id").value.trim();
+        if (!State.currentRoomId) {
             showAlert("Please enter a valid room ID", 3000);
             return;
         }
@@ -68,26 +60,27 @@ async function joinRoom() {
 
     const playerName = document.getElementById("player-name").value;
     try {
-        const data = await apiRequest(`/api/rooms/${currentRoomId}/join`, 'POST', { playerName });
-        sessionId = data.id;
-        updateCurrentRoomDisplay(currentRoomId);
-        connectToRoom(currentRoomId);
+        const data = await apiRequest(`/api/rooms/${State.currentRoomId}/join`, 'POST', { playerName });
+        State.sessionId = data.id;
+        updateCurrentRoomDisplay(State.currentRoomId);
+        connectToRoom(State.currentRoomId);
     } catch (error) {
         handleError(error, "Failed to join room. Please try again later.");
     }
 }
 
-
+//TODO refactor to use apiRequest()
 async function leaveRoom() {
-    console.log(`Leaving room with id: ${currentRoomId}`);
+    console.log(`Leaving room with id: ${State.currentRoomId}`);
 
-    if (currentRoomId.length === 0) return;
+    if (!State.currentRoomId || State.currentRoomId.length === 0) return;
 
     try {
-        const url = `/api/rooms/${currentRoomId}/leave?sessionId=${sessionId}`;
-        const response = await fetch(url, { 
-            'method': 'POST' ,
-            'credentials': 'include' });
+        const url = `/api/rooms/${State.currentRoomId}/leave`;
+        const response = await fetch(url, {
+            'method': 'POST',
+            'credentials': 'include'
+        });
 
         if (!response.ok) {
             showAlert("Failed leaving room, try again later.", 3000);
@@ -107,71 +100,69 @@ async function leaveRoom() {
 }
 
 function connectToRoom(roomId) {
-    stompClient = Stomp.over(new SockJS('/ws', null, { withCredentials: true }));
-    console.log("SessionId received from server: " + sessionId);
+    State.stompClient = Stomp.over(new SockJS('/ws', null, { withCredentials: true }));
+    console.log("SessionId received from server: " + State.sessionId);
 
-    stompClient.connect({}, function(frame) {
+    State.stompClient.connect({}, function(frame) {
         console.log('Connected: ' + frame);
         document.getElementById("start-screen").style.display = "none";
         document.getElementById("game-screen").style.display = "flex";
 
         fetchInitialData(roomId);
 
-        stompClient.subscribe('/topic/room/' + roomId + '/positions', function(message) {
+        State.stompClient.subscribe('/topic/room/' + roomId + '/positions', function(message) {
             const positions = JSON.parse(message.body);
 
-            if (positions.status === "success"){
+            if (positions.status === "success") {
                 updatePositions(positions);
             } else {
                 console.error("Access denied");
             }
-            
+
         });
 
-        stompClient.subscribe('/topic/room/' + roomId + '/status', function(message) {
-            const status = JSON.parse(message.body); 
+        State.stompClient.subscribe('/topic/room/' + roomId + '/status', function(message) {
+            const status = JSON.parse(message.body);
             const playerNamesMap = status.playerNames;
             const playerCount = status.playerCount;
             updatePlayerList(playerNamesMap);
             displayPlayerCount(playerCount);
 
-            handleGameStatus(status); 
+            handleGameStatus(status);
         });
-        // TODO: Add to its own function when refactoring player count
-        stompClient.send("/app/room/" + currentRoomId + "/status", { sessionId: sessionId }, "");
+        State.stompClient.send("/app/room/" + State.currentRoomId + "/status", { sessionId: State.sessionId }, "");
     });
 }
 
 function sendMessage() {
     const messageInput = document.getElementById("message-input").value;
     const fixedTextContainer = document.getElementById("fixedTextContainer");
-    const fixedText = fixedTextContainer.textContent; 
+    const fixedText = fixedTextContainer.textContent;
 
     if (messageInput.length > 0) {
-        const lastChar = messageInput.charAt(0).toLowerCase(); 
-        const expectedChar = fixedText.charAt(textPos).toLowerCase(); 
+        const lastChar = messageInput.charAt(0).toLowerCase();
+        const expectedChar = fixedText.charAt(State.textPos).toLowerCase();
 
-        totalCharsTyped++;
+        State.totalCharsTyped++;
 
         if (lastChar === expectedChar) {
-            correctCharsTyped++;
-            textPos++;
-        } 
+            State.correctCharsTyped++;
+            State.textPos++;
+        }
         updateAccuracyDisplay();
 
-        stompClient.send("/app/room/" + currentRoomId, { sessionId: sessionId }, messageInput);
+        State.stompClient.send("/app/room/" + State.currentRoomId, { sessionId: State.sessionId }, messageInput);
         document.getElementById("message-input").value = '';
     }
 }
 
-
 function sendStartToRoom() {
-    stompClient.send(`/app/room/${currentRoomId}/start`, { sessionId: sessionId }, {});
+    State.stompClient.send(`/app/room/${State.currentRoomId}/start`, { sessionId: State.sessionId }, {});
 }
 
 async function fetchInitialData() {
     try {
-        const data = await apiRequest(`/api/rooms/${currentRoomId}/text`, 'GET');
+        const data = await apiRequest(`/api/rooms/${State.currentRoomId}/text`, 'GET');
         displayFixedText(data.textString);
         document.getElementById("timer").textContent = "0:00";
     } catch (error) {
@@ -184,10 +175,10 @@ function updatePositions(positionDto) {
     const fixedText = fixedTextContainer.textContent;
     const positions = positionDto.positions;
     const textLength = fixedText.length;
-    
+
     for (const sessionIdTest in positions) {
         if (positions[sessionIdTest] === textLength) {
-            stompClient.send(`/app/room/${currentRoomId}/done`, { sessionId: sessionId }, {});
+            State.stompClient.send(`/app/room/${State.currentRoomId}/done`, { sessionId: State.sessionId }, {});
             return;
         }
     }
@@ -195,7 +186,7 @@ function updatePositions(positionDto) {
     const getHighlightClass = (charIndex) => {
         for (const sessionIdTest in positions) {
             if (positions[sessionIdTest] === charIndex) {
-                return sessionIdTest === sessionId ? 'highlight-client-self' : 'highlight-client-opponent';
+                return sessionIdTest === State.sessionId ? 'highlight-client-self' : 'highlight-client-opponent';
             }
         }
         return '';
@@ -220,7 +211,7 @@ function startGame() {
 
     const messageInput = document.getElementById("message-input");
     messageInput.disabled = false;
-    messageInput.focus(); 
+    messageInput.focus();
     startGameTimer();
 
     const startButton = document.getElementById('start-game-button');
@@ -236,7 +227,7 @@ function handleGameStatus(status) {
         const endTimeKeys = Object.keys(status.endTime);
         stopGameTimer();
         showPopup("Player with id: " + endTimeKeys + " won with " + status.endTime[endTimeKeys[0]] + " words per minute!");
-        
+
     } else if (status.gameStarted) {
         showAlert("Game starting in 5 seconds!", 3000);
         document.getElementById("message-input").disabled = true;
@@ -245,15 +236,8 @@ function handleGameStatus(status) {
     }
 }
 
-
 function resetClient() {
-    stompClient = null;
-    currentRoomId = null;
-    sessionId = null;
-    gameStarted = false;
-    totalCharsTyped = 0;
-    correctCharsTyped = 0;
-    textPos = 0;
+    State.reset();
     updateAccuracyDisplay();
 
     const startButton = document.getElementById('start-game-button');
@@ -273,7 +257,8 @@ function copyToClipboard() {
 }
 
 export function updateAccuracyDisplay() {
-    const accuracyPercentage = (totalCharsTyped === 0) ? 100 : (correctCharsTyped / totalCharsTyped) * 100;
+    const accuracyPercentage = (State.totalCharsTyped === 0) ? 100 : (State.correctCharsTyped / State.totalCharsTyped) * 100;
     document.getElementById("accuracy").textContent = `${accuracyPercentage.toFixed(0)}%`;
 }
+
   

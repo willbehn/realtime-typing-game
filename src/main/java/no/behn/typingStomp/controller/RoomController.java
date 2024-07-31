@@ -67,9 +67,9 @@ public class RoomController {
         } catch (RoomNotFoundException exc) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Room not found", exc);
         }
-}
-
-    @PostMapping("/{roomId}/leave")
+    }
+    
+    @PostMapping(value = "/{roomId}/leave", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<String> leaveRoom(@PathVariable String roomId, HttpServletRequest request) {
         try {
             String sessionIdFromCookie = null;
