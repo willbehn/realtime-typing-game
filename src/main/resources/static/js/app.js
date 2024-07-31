@@ -1,4 +1,4 @@
-import { showPopup, showAlert, displayFixedText, displayPlayerCount, updatePlayerList, updateCurrentRoomDisplay } from './ui.js';
+import { showPopup, showAlert, displayFixedText, displayPlayerCount, updatePlayerList, updateCurrentRoomDisplay, updateAccuracyDisplay } from './ui.js';
 import { handleCountdown, resetCountdown, countdown, startGameTimer, stopGameTimer } from './timer.js';
 import { setupPopupModal, enableTyping } from './utils.js';
 import State from './state.js';
@@ -104,7 +104,6 @@ function connectToRoom(roomId) {
     console.log("SessionId received from server: " + State.sessionId);
 
     State.stompClient.connect({}, function(frame) {
-        console.log('Connected: ' + frame);
         document.getElementById("start-screen").style.display = "none";
         document.getElementById("game-screen").style.display = "flex";
 
@@ -123,10 +122,8 @@ function connectToRoom(roomId) {
 
         State.stompClient.subscribe('/topic/room/' + roomId + '/status', function(message) {
             const status = JSON.parse(message.body);
-            const playerNamesMap = status.playerNames;
-            const playerCount = status.playerCount;
-            updatePlayerList(playerNamesMap);
-            displayPlayerCount(playerCount);
+            updatePlayerList(status.playerNames);
+            displayPlayerCount(status.playerCount);
 
             handleGameStatus(status);
         });
@@ -224,9 +221,10 @@ function handleGameStatus(status) {
 
     if (status.done) {
         document.getElementById("message-input").disabled = true;
-        const endTimeKeys = Object.keys(status.endTime);
+        const [winnerId, winnerTime] = Object.entries(status.endTime)[0];
+        const winnerName = status.playerNames[winnerId];
         stopGameTimer();
-        showPopup("Player with id: " + endTimeKeys + " won with " + status.endTime[endTimeKeys[0]] + " words per minute!");
+        showPopup(`Player ${winnerName} (id: ${winnerId}) won with ${winnerTime} words per minute!`);
 
     } else if (status.gameStarted) {
         showAlert("Game starting in 5 seconds!", 3000);
@@ -256,9 +254,6 @@ function copyToClipboard() {
     });
 }
 
-export function updateAccuracyDisplay() {
-    const accuracyPercentage = (State.totalCharsTyped === 0) ? 100 : (State.correctCharsTyped / State.totalCharsTyped) * 100;
-    document.getElementById("accuracy").textContent = `${accuracyPercentage.toFixed(0)}%`;
-}
+
 
   

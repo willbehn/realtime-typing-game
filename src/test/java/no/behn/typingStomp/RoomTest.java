@@ -6,9 +6,6 @@ import org.junit.jupiter.api.Test;
 import no.behn.typingStomp.model.Room;
 import no.behn.typingStomp.model.Text;
 
-import java.time.Duration;
-import java.time.Instant;
-import java.util.Map;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class RoomTest {

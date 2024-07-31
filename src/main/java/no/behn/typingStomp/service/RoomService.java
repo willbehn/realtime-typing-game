@@ -6,7 +6,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
 import org.springframework.stereotype.Service;
 
-import no.behn.typingStomp.dto.PositionDto;
 import no.behn.typingStomp.dto.StateResponseDto;
 import no.behn.typingStomp.exception.RoomNotFoundException;
 import no.behn.typingStomp.model.Room;
@@ -93,7 +92,7 @@ public class RoomService {
         log.info("Removing client with sessionId: {} from roomId: {}", sessionId, roomId);
         room.removeClient(sessionId);
 
-        // Remove the room if there are no players remaining
+        //Deletes the room if there are no players remaining
         if (room.getPlayerCount() == 0) {
             log.info("No players left in room with id {}, deleting room", roomId);
             rooms.remove(roomId);

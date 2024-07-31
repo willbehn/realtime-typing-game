@@ -1,3 +1,5 @@
+import State from './state.js';
+
 export function showAlert(message, duration = 3000) {
     const alertContainer = document.getElementById("alert-container");
     alertContainer.textContent = message;
@@ -41,4 +43,9 @@ export function updatePlayerList(playerNamesMap) {
 
 export function updateCurrentRoomDisplay(roomId) {
     document.getElementById("current-room-id").textContent = `Room ID: ${roomId}`;
+}
+
+export function updateAccuracyDisplay() {
+    const accuracyPercentage = (State.totalCharsTyped === 0) ? 100 : (State.correctCharsTyped / State.totalCharsTyped) * 100;
+    document.getElementById("accuracy").textContent = `${accuracyPercentage.toFixed(0)}%`;
 }
