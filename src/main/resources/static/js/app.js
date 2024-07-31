@@ -108,28 +108,32 @@ function connectToRoom(roomId) {
         document.getElementById("game-screen").style.display = "flex";
 
         fetchInitialData(roomId);
-
-        State.stompClient.subscribe('/topic/room/' + roomId + '/positions', function(message) {
-            const positions = JSON.parse(message.body);
-
-            if (positions.status === "success") {
-                updatePositions(positions);
-            } else {
-                console.error("Access denied");
-            }
-
-        });
-
-        State.stompClient.subscribe('/topic/room/' + roomId + '/status', function(message) {
-            const status = JSON.parse(message.body);
-            updatePlayerList(status.playerNames);
-            displayPlayerCount(status.playerCount);
-
-            handleGameStatus(status);
-        });
-        State.stompClient.send("/app/room/" + State.currentRoomId + "/status", { sessionId: State.sessionId }, "");
+        subscribeToTopics(roomId);
     });
 }
+
+function subscribeToTopics(roomId){
+    State.stompClient.subscribe('/topic/room/' + roomId + '/positions', function(message) {
+        const positions = JSON.parse(message.body);
+
+        if (positions.status === "success") {
+            updatePositions(positions);
+        } else {
+            console.error("Access denied");
+        }
+
+    });
+
+    State.stompClient.subscribe('/topic/room/' + roomId + '/status', function(message) {
+        const status = JSON.parse(message.body);
+        updatePlayerList(status.playerNames);
+        displayPlayerCount(status.playerCount);
+
+        handleGameStatus(status);
+    });
+    State.stompClient.send("/app/room/" + State.currentRoomId + "/status", { sessionId: State.sessionId }, "");
+}
+
 
 function sendMessage() {
     const messageInput = document.getElementById("message-input").value;
