@@ -19,88 +19,90 @@ import java.util.concurrent.ConcurrentHashMap;
 @Service
 public class RoomService {
 
-    private Map<String, Room> rooms = new ConcurrentHashMap<>();
+    private final Map<String, Room> rooms = new ConcurrentHashMap<>();
     private static final Logger log = LoggerFactory.getLogger(RoomService.class);
+
+    private static final String SUCCESS_STATUS = "success";
+    private static final String ERROR_STATUS = "error";
 
     public Room createRoom(Text text) {
         String roomId = generateRoomId();
         Room room = new Room(roomId, text);
         rooms.put(roomId, room);
 
-        log.info("Creating room with id: " + roomId);
+        log.info("Creating room with id: {}", roomId);
         return room;
     }
 
     public Room getRoom(String roomId) {
         Room room = rooms.get(roomId);
 
-        if (room != null){
+        if (room != null) {
             return room;
-        } else throw new RoomNotFoundException("Room with id: " + roomId + " not found");
+        } else {
+            throw new RoomNotFoundException("Room with id: " + roomId + " not found");
+        }
     }
 
-    public StateResponseDto getRoomStatus(String roomId, StompHeaderAccessor headerAccessor){
+    public StateResponseDto getRoomStatus(String roomId, StompHeaderAccessor headerAccessor) {
         Room room = getRoom(roomId);
-        return new StateResponseDto(room.getState(), room.getClientEndtimes(), room.getDone(), room.getPlayerNames(), room.getPlayerCount(), "success");
-        
+        return createStateResponseDto(room, SUCCESS_STATUS);
     }
 
     public StateResponseDto startGameInRoom(String roomId, StompHeaderAccessor headerAccessor) {
         String sessionId = headerAccessor.getFirstNativeHeader("sessionId");
         Room room = getRoom(roomId);
 
-
-        if (!room.validateSessionId(sessionId)){
-            return new StateResponseDto(false, new ConcurrentHashMap<>(), false,new ConcurrentHashMap<>(),0, "error");
+        if (!room.validateSessionId(sessionId)) {
+            return createStateResponseDto(room, ERROR_STATUS);
         }
 
         room.setStarted();
-        log.info(room.getStartTime() + ": Started room with id: " + roomId);
-        return new StateResponseDto(room.getState(), room.getClientEndtimes(), room.getDone(), room.getPlayerNames(), room.getPlayerCount(), "success");
-        
+        log.info("{}: Started room with id: {}", room.getStartTime(), roomId);
+        return createStateResponseDto(room, SUCCESS_STATUS);
     }
 
     public StateResponseDto markPlayerAsDone(String roomId, StompHeaderAccessor headerAccessor) {
         String sessionId = headerAccessor.getFirstNativeHeader("sessionId");
         Room room = getRoom(roomId);
 
-        if (!room.validateSessionId(sessionId)){
-            return new StateResponseDto(false, new ConcurrentHashMap<>(), false,new ConcurrentHashMap<>(),0, "error");
+        if (!room.validateSessionId(sessionId)) {
+            return createStateResponseDto(room, ERROR_STATUS);
         }
 
         room.setDone();
-        room.addClientEndTime(sessionId, getWordsPerMinute(room.getText().getWordCount(), room.getDurationInSeconds())); //TODO få antall ord fra text objekt
-        return new StateResponseDto(room.getState(), room.getClientEndtimes(), room.getDone(), room.getPlayerNames(), room.getPlayerCount(), "success");
+        room.addClientEndTime(sessionId, getWordsPerMinute(room.getText().getWordCount(), room.getDurationInSeconds()));
+        return createStateResponseDto(room, SUCCESS_STATUS);
     }
 
     public String addClientToRoom(String roomId, String playerName) {
         Room room = getRoom(roomId);
         
         String sessionId = UUID.randomUUID().toString();
-        log.info("Adding client with sessionId: " + sessionId + " to roomId: " + roomId);
+        log.info("Adding client with sessionId: {} to roomId: {}", sessionId, roomId);
         room.addClient(sessionId, playerName);
         return sessionId;
     }
 
-    public ResponseEntity<String>removeClientFromRoom(String roomId, String sessionId) {
+    public ResponseEntity<String> removeClientFromRoom(String roomId, String sessionId) {
         Room room = getRoom(roomId);
-        log.info("Removing client with sessionId: " + sessionId + " from roomId: " + roomId);
+        log.info("Removing client with sessionId: {} from roomId: {}", sessionId, roomId);
         room.removeClient(sessionId);
 
-        // Removes the room if there are no players remaining
-        if (room.getPlayerCount() == 0){
-            log.info("No players left in room with id " + roomId +", deleting room");
+        // Remove the room if there are no players remaining
+        if (room.getPlayerCount() == 0) {
+            log.info("No players left in room with id {}, deleting room", roomId);
             rooms.remove(roomId);
         }
 
         return ResponseEntity.ok("Room left successfully");
     }
 
-    public String getPlayerCount(String roomId){
+    public String getPlayerCount(String roomId) {
         return Integer.toString(getRoom(roomId).getPlayerCount());
     }
 
-    public Text getRoomText(String roomId){
+    public Text getRoomText(String roomId) {
         return getRoom(roomId).getText();
     }
 
@@ -108,15 +110,25 @@ public class RoomService {
         return UUID.randomUUID().toString();
     }
 
-    public long getWordsPerMinute(int wordCount, long timeInSeconds) {
+    private long getWordsPerMinute(int wordCount, long timeInSeconds) {
         if (timeInSeconds == 0) {
             throw new IllegalArgumentException("Time cannot be zero.");
         }
-        
+
         double timeInMinutes = timeInSeconds / 60.0;
-        int wordsPerMinute = (int) (wordCount / timeInMinutes);
-        
-        return wordsPerMinute;
+        return (int) (wordCount / timeInMinutes);
+    }
+
+    private StateResponseDto createStateResponseDto(Room room, String status) {
+        return new StateResponseDto(
+            room.getState(), 
+            room.getClientEndtimes(), 
+            room.getDone(), 
+            room.getPlayerNames(), 
+            room.getPlayerCount(), 
+            status
+        );
     }
 }
+
 
