@@ -3,8 +3,10 @@ package no.behn.typingStomp.service;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
+import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
 import org.springframework.stereotype.Service;
 
+import no.behn.typingStomp.dto.PositionDto;
 import no.behn.typingStomp.dto.StateResponseDto;
 import no.behn.typingStomp.exception.RoomNotFoundException;
 import no.behn.typingStomp.model.Room;
@@ -37,27 +39,38 @@ public class RoomService {
         } else throw new RoomNotFoundException("Room with id: " + roomId + " not found");
     }
 
-    public StateResponseDto getRoomStatus(String roomId){
+    public StateResponseDto getRoomStatus(String roomId, StompHeaderAccessor headerAccessor){
         Room room = getRoom(roomId);
-        return new StateResponseDto(room.getState(), room.getClientEndtimes(), room.getDone(), room.getPlayerNames(), room.getPlayerCount());
+        return new StateResponseDto(room.getState(), room.getClientEndtimes(), room.getDone(), room.getPlayerNames(), room.getPlayerCount(), "success");
         
     }
 
-    public StateResponseDto startGameInRoom(String roomId) {
+    public StateResponseDto startGameInRoom(String roomId, StompHeaderAccessor headerAccessor) {
+        String sessionId = headerAccessor.getFirstNativeHeader("sessionId");
         Room room = getRoom(roomId);
+
+
+        if (!room.validateSessionId(sessionId)){
+            return new StateResponseDto(false, new ConcurrentHashMap<>(), false,new ConcurrentHashMap<>(),0, "error");
+        }
 
         room.setStarted();
         log.info(room.getStartTime() + ": Started room with id: " + roomId);
-        return new StateResponseDto(room.getState(), room.getClientEndtimes(), room.getDone(), room.getPlayerNames(), room.getPlayerCount());
+        return new StateResponseDto(room.getState(), room.getClientEndtimes(), room.getDone(), room.getPlayerNames(), room.getPlayerCount(), "success");
         
     }
 
-    public StateResponseDto markPlayerAsDone(String roomId, String sessionId) {
+    public StateResponseDto markPlayerAsDone(String roomId, StompHeaderAccessor headerAccessor) {
+        String sessionId = headerAccessor.getFirstNativeHeader("sessionId");
         Room room = getRoom(roomId);
+
+        if (!room.validateSessionId(sessionId)){
+            return new StateResponseDto(false, new ConcurrentHashMap<>(), false,new ConcurrentHashMap<>(),0, "error");
+        }
 
         room.setDone();
         room.addClientEndTime(sessionId, getWordsPerMinute(room.getText().getWordCount(), room.getDurationInSeconds())); //TODO få antall ord fra text objekt
-        return new StateResponseDto(room.getState(), room.getClientEndtimes(), room.getDone(), room.getPlayerNames(), room.getPlayerCount());
+        return new StateResponseDto(room.getState(), room.getClientEndtimes(), room.getDone(), room.getPlayerNames(), room.getPlayerCount(), "success");
     }
 
     public String addClientToRoom(String roomId, String playerName) {

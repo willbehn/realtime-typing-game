@@ -175,7 +175,7 @@ function connectToRoom(roomId) {
             handleGameStatus(status); 
         });
         // TODO: Add to its own function when refactoring player count
-        stompClient.send("/app/room/" + currentRoomId + "/status", {}, "");
+        stompClient.send("/app/room/" + currentRoomId + "/status", { sessionId: sessionId }, "");
     });
 }
 
@@ -203,7 +203,7 @@ function sendMessage() {
 
 
 function sendStartToRoom() {
-    stompClient.send(`/app/room/${currentRoomId}/start`, {}, {});
+    stompClient.send(`/app/room/${currentRoomId}/start`, { sessionId: sessionId }, {});
 }
 
 async function fetchInitialData() {
@@ -233,7 +233,7 @@ function updatePositions(positionDto) {
     
     for (const sessionIdTest in positions) {
         if (positions[sessionIdTest] === textLength) {
-            stompClient.send(`/app/room/${currentRoomId}/player/${sessionIdTest}/done`, {}, {});
+            stompClient.send(`/app/room/${currentRoomId}/done`, { sessionId: sessionId }, {});
             return;
         }
     }

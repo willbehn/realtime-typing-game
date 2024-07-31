@@ -98,6 +98,10 @@ public class Room {
         }
         return -1; 
     }
+
+    public boolean validateSessionId(String sessionId){
+        return clientPositions.containsKey(sessionId);
+    }
 }
 
 
