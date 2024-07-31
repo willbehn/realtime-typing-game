@@ -58,41 +58,22 @@ async function createRoom() {
 }
 
 async function joinRoom() {
-    if (currentRoomId == null) {
+    if (!currentRoomId) {
         currentRoomId = document.getElementById("join-room-id").value.trim();
         if (!currentRoomId) {
             showAlert("Please enter a valid room ID", 3000);
             return;
         }
-    } 
+    }
 
     const playerName = document.getElementById("player-name").value;
-    console.log(`Trying to join room with id: ${currentRoomId}`);
-
     try {
-        const response = await fetch(`/api/rooms/${currentRoomId}/join`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'credentials': 'include' 
-            },
-            body: JSON.stringify({ playerName })
-        });
-
-        if (!response.ok) {
-            throw new Error('Room not available or failed to join created room');
-        }
-
-        const data = await response.json();
+        const data = await apiRequest(`/api/rooms/${currentRoomId}/join`, 'POST', { playerName });
         sessionId = data.id;
-        console.log(`sessionId received: ${data.id}`);
-
-        document.getElementById("current-room-id").textContent = `Room ID: ${currentRoomId}`;
+        updateCurrentRoomDisplay(currentRoomId);
         connectToRoom(currentRoomId);
-
     } catch (error) {
-        console.error('Failed to join room:', error);
-        showAlert("Failed to join room. Please try again later.", 3000);
+        handleError(error, "Failed to join room. Please try again later.");
     }
 }
 
