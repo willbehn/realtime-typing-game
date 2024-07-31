@@ -77,6 +77,10 @@ public class RoomService {
 
     public String addClientToRoom(String roomId, String playerName) {
         Room room = getRoom(roomId);
+
+        if (room.getState()){
+            throw new RoomNotFoundException("Room with id: " + roomId + " has allready started");
+        }
         
         String sessionId = UUID.randomUUID().toString();
         log.info("Adding client with sessionId: {} to roomId: {}", sessionId, roomId);
