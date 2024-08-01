@@ -1,6 +1,6 @@
 # TypeSprint
 
-TypeSprint is a real-time multiplayer typing game where players compete to type texts accurately and quickly. This project uses Spring Boot for the backend and WebSockets for real-time communication. 
+TypeSprint is a real-time multiplayer typing game where players compete to type texts accurately and quickly. This project uses Spring Boot for the backend with WebSockets for real-time communication. 
 
 ## Table of Contents
 
@@ -22,27 +22,28 @@ Check out the live demo: [TypeSprint Demo](https://typestomp.onrender.com) (host
 ## Features
 
 - **Real-time Multiplayer Typing Competition**: Players can join rooms and compete against each other to type texts accurately and quickly.
+
 - **Room Creation**: Rooms are created through REST endpoints, and each room is assigned a unique ID. The uniqe room ID is used for all communication within that room, like leaving/joining a room, position handling etc.
 
-- **Real-time Position Tracking**: Players positions in the text are tracked in real-time using the STOMP protocol over WebSockets, allowing all players to see each other's progress.
+- **Real-time Position Tracking**: Players positions in the text are tracked in real-time using the STOMP protocol over WebSockets, allowing all players to see each other's progress as the game progress.
 
 ## Technologies Used
 
-- ![Java](https://img.shields.io/badge/Java-ED8B00?style=for-the-badge&logo=java&logoColor=white)
-- ![Spring Boot](https://img.shields.io/badge/Spring%20Boot-6DB33F?style=for-the-badge&logo=spring-boot&logoColor=white)
-- ![WebSockets](https://img.shields.io/badge/WebSockets-001E2B?style=for-the-badge&logo=websocket&logoColor=white)
-- ![Gradle](https://img.shields.io/badge/Gradle-02303A?style=for-the-badge&logo=gradle&logoColor=white)
-- ![HTML](https://img.shields.io/badge/HTML-239120?style=for-the-badge&logo=html5&logoColor=white)
-- ![CSS](https://img.shields.io/badge/CSS-254BDD?style=for-the-badge&logo=css3&logoColor=white)
-- ![JavaScript](https://img.shields.io/badge/JavaScript-323330?style=for-the-badge&logo=javascript&logoColor=F7DF1E)
+![Java](https://img.shields.io/badge/Java-ED8B00?style=for-the-badge&logo=java&logoColor=white)
+![Spring Boot](https://img.shields.io/badge/Spring%20Boot-6DB33F?style=for-the-badge&logo=spring-boot&logoColor=white)
+![WebSockets](https://img.shields.io/badge/WebSockets-001E2B?style=for-the-badge&logo=websocket&logoColor=white)
+![Gradle](https://img.shields.io/badge/Gradle-02303A?style=for-the-badge&logo=gradle&logoColor=white)
+![HTML](https://img.shields.io/badge/HTML-239120?style=for-the-badge&logo=html5&logoColor=white)
+![CSS](https://img.shields.io/badge/CSS-254BDD?style=for-the-badge&logo=css3&logoColor=white)
+![JavaScript](https://img.shields.io/badge/JavaScript-323330?style=for-the-badge&logo=javascript&logoColor=F7DF1E)
+
 
 
 ## Getting Started
 
 ### Prerequisites
 
-- Java 11 or higher
-- Gradle
+- Java 21 or higher
 - A web browser
 
 ### Installation
